@@ -1,0 +1,2377 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Suivi Commercial</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,sans-serif}
+body{background:#f5f6fa;font-size:13px;color:#111827}
+.hdr{background:#fff;border-bottom:1px solid #e8eaed;padding:8px 20px;display:flex;align-items:center;gap:14px;min-height:56px;position:sticky;top:0;z-index:50;box-shadow:0 1px 3px rgba(0,0,0,.04);flex-wrap:wrap}
+.hdr-title{font-size:16px;font-weight:700;color:#111827;letter-spacing:-0.5px}
+.hdr-mid{flex:1;display:flex;gap:8px;align-items:center}
+.alert-red{background:#fef2f2;color:#dc2626;border:1px solid #fca5a5;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:600;cursor:pointer}
+.user-box{display:flex;align-items:center;gap:6px;background:#eef2ff;border:2px solid #4f46e5;border-radius:8px;padding:4px 10px}
+.nav{background:#fff;border-bottom:1px solid #e8eaed;padding:0 20px;display:flex;align-items:center;gap:0}
+.nb{padding:12px 16px;border:none;border-bottom:2px solid transparent;background:none;color:#5f6368;cursor:pointer;font-size:12px;font-weight:400;transition:all .15s}
+.nb.a{border-bottom-color:#4f46e5;color:#4f46e5;font-weight:600}
+.nb:hover{color:#4f46e5}
+.ml-auto{margin-left:auto}
+.wrap{padding:20px;max-width:1150px;margin:0 auto}
+.card{background:#fff;border:1px solid #e8eaed;border-radius:10px;padding:18px;margin-bottom:14px}
+.card-title{font-weight:600;font-size:14px;margin-bottom:4px}
+.card-sub{font-size:11px;color:#9ca3af;margin-bottom:14px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.kpi{background:#fff;border:1px solid #e8eaed;border-radius:10px;padding:14px 16px}
+.kpi .lbl{font-size:11px;color:#6b7280;margin-bottom:5px}
+.kpi .val{font-size:21px;font-weight:700}
+.kpi .sub{font-size:10px;color:#9ca3af;margin-top:3px}
+table{width:100%;border-collapse:collapse}
+th{padding:9px 10px;text-align:left;font-size:11px;color:#9ca3af;font-weight:500;border-bottom:2px solid #f3f4f6;white-space:nowrap}
+td{padding:11px 10px;border-bottom:1px solid #f9fafb;font-size:12px;vertical-align:middle}
+.tr-click{cursor:pointer;transition:background .1s}
+.tr-click:hover td{background:#f9fafb}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.hot{background:#fff1f0;color:#cf1322;border:1px solid #ffa39e}
+.warm{background:#fffbe6;color:#ad6800;border:1px solid #ffe58f}
+.cold{background:#e6f4ff;color:#0958d9;border:1px solid #91caff}
+.won{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0}
+.lost{background:#f9fafb;color:#6b7280;border:1px solid #e5e7eb}
+.store-tag{background:#f0f9ff;color:#0369a1;border:1px solid #bae6fd;border-radius:12px;padding:2px 8px;font-size:11px}
+.btn-p{background:#4f46e5;color:#fff;border:none;border-radius:7px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;transition:opacity .15s}
+.btn-p:hover{opacity:.9}
+.btn-g{background:#f3f4f6;color:#374151;border:1px solid #d1d5db;border-radius:7px;padding:8px 14px;font-size:12px;cursor:pointer}
+.btn-g:hover{background:#e5e7eb}
+.btn-d{background:#dc2626;color:#fff;border:none;border-radius:7px;padding:8px 14px;font-size:12px;cursor:pointer}
+input,select,textarea{border:1px solid #d1d5db;border-radius:7px;padding:8px 11px;font-size:13px;outline:none;background:#fff;width:100%;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:#4f46e5}
+.ovl{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:200}
+.modal{background:#fff;border-radius:14px;padding:26px;width:500px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.modal-title{font-weight:700;font-size:16px;margin-bottom:16px}
+.modal-sub{font-size:11px;color:#9ca3af;margin-bottom:16px;margin-top:-10px}
+.lbl{font-size:11px;color:#6b7280;display:block;margin-bottom:5px;font-weight:500}
+.field{margin-bottom:12px}
+.row-end{display:flex;gap:8px;margin-top:16px;justify-content:flex-end}
+.grid-half{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.temp-row{display:flex;gap:8px}
+.tbtn{flex:1;padding:8px 6px;border-radius:7px;border:2px solid #e5e7eb;background:#fff;color:#6b7280;cursor:pointer;font-size:12px;font-weight:500;transition:all .15s}
+.tbtn.hot{border-color:#cf1322;background:#fff1f0;color:#cf1322;font-weight:700}
+.tbtn.warm{border-color:#ad6800;background:#fffbe6;color:#ad6800;font-weight:700}
+.tbtn.cold{border-color:#0958d9;background:#e6f4ff;color:#0958d9;font-weight:700}
+.res-row{display:flex;gap:8px}
+.rbtn{flex:1;padding:8px 6px;border-radius:7px;border:2px solid #e5e7eb;background:#fff;color:#6b7280;cursor:pointer;font-size:12px;font-weight:500}
+.rbtn.sel{border-color:#4f46e5;background:#eef2ff;color:#4f46e5;font-weight:700}
+.loss-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.lbtn{padding:8px 10px;border-radius:7px;border:2px solid #e5e7eb;background:#fff;color:#6b7280;cursor:pointer;font-size:11px;font-weight:500;text-align:left;transition:all .15s}
+.lbtn.sel{border-color:#dc2626;background:#fff1f0;color:#dc2626;font-weight:600}
+.ctype-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ctbtn{padding:9px 10px;border-radius:7px;border:2px solid #e5e7eb;background:#fff;color:#6b7280;cursor:pointer;font-size:12px;text-align:left;transition:all .15s}
+.ctbtn.sel{border-color:#4f46e5;background:#eef2ff;color:#4f46e5;font-weight:600}
+.date-box{background:#f0f9ff;border-radius:8px;padding:12px;border:1px solid #bae6fd;margin-bottom:12px}
+.date-box-title{font-size:11px;font-weight:600;color:#0284c7;margin-bottom:10px}
+.info-box{background:#f9fafb;border-radius:8px;padding:12px}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:12px}
+.info-row+.info-row{border-top:1px solid #e8eaed}
+.fu-card{border-left:4px solid #4f46e5;padding:13px 16px;margin-bottom:8px;background:#fff;border-radius:8px;border:1px solid #e8eaed}
+.fu-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.fu-tags{display:flex;gap:5px;flex-wrap:wrap}
+.alert-y{padding:10px 14px;background:#fffbe6;border-radius:8px;border:1px solid #ffe58f;font-size:12px;color:#ad6800;margin-top:12px}
+.flt-bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.flt-bar select{width:auto;cursor:pointer}
+.flt-bar input{max-width:180px}
+.bar-wrap{height:6px;background:#f3f4f6;border-radius:3px;margin-top:3px}
+.bar{height:6px;border-radius:3px}
+.det-grid{display:grid;grid-template-columns:300px 1fr;gap:18px}
+.left-panel{display:flex;flex-direction:column;gap:12px}
+.client-card{background:#fff;border:1px solid #e8eaed;border-radius:10px;padding:18px}
+.client-amount{font-size:26px;font-weight:800;color:#4f46e5;margin:12px 0}
+.tag{font-size:11px;font-weight:600;border-radius:20px;padding:3px 9px;display:inline-block}
+.tc-info{font-size:11px;color:#9ca3af;font-weight:400;margin-left:4px}
+.month-hint{font-size:11px;color:#4f46e5;margin-top:4px}
+.empty{color:#9ca3af;text-align:center;padding:24px;font-size:13px}
+@media(max-width:700px){.grid4{grid-template-columns:1fr 1fr}.det-grid{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+const SPS=["Nicolas","Teddy","Laurent","Benoit","Johan","Fabien","Fatiha","Mathieu","Christel"];
+const SECS=["Isabelle","Fatiha"];
+// Secrétaires disponibles selon le magasin
+const secsForStore=store=>store==="BATIMAN AUBENAS"?["Isabelle"]:[...SECS];
+const STORES=["BATIMAN AUBENAS","VIDALOT MENUISERIE","LDH","V.PISCINE"];
+const PTYPES=["VENTE NEUF","VENTE RENO","KIT PREMIUM","VENTE PISCINE","VENTE SPA","AUTRE"];
+const TEMP={hot:{l:"Chaud",e:"🔥"},warm:{l:"Tiède",e:"🌡️"},cold:{l:"Froid",e:"❄️"}};
+const CTYPES=[["call","📞","Appel répondu"],["inbound","📲","Client appelé"],["voicemail","📱","Message vocal"],["email","📧","Email"],["store","🏪","Venu en magasin"],["meeting","🤝","Réunion"]];
+const LOSS=["💰 Prix trop élevé","🏆 Concurrent retenu","⏳ Projet reporté","❌ Projet annulé","📞 Injoignable","🏗️ Budget insuffisant","✏️ Autre"];
+const MFR=["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+const MSH=["Jan","Fév","Mar","Avr","Mai","Jun","Jul","Aoû","Sep","Oct","Nov","Déc"];
+
+const SEEDS=[
+  ["BARBIER Pierrick",36480.80,"2026-04-13","Nicolas"],["GIRAUD Emmanuel",2106.67,"2026-04-13","Nicolas"],
+  ["TEYSSIER Christian (1)",8433.99,"2026-04-10","Nicolas"],["TEYSSIER Christian (2)",9223.66,"2026-04-10","Nicolas"],
+  ["MAZOYER Christophe",36068.95,"2026-04-10","Nicolas"],["GODARD Axel",374.04,"2026-04-10","Nicolas"],
+  ["ERNEST Nicolas",1440.44,"2026-04-10","Nicolas"],["BROUWENSTIJN R. (1)",2118.00,"2026-04-10","Nicolas"],
+  ["LATOURRE Fanny",4480.54,"2026-04-10","Nicolas"],["FORINO & MOULIN",581.82,"2026-04-10","Nicolas"],
+  ["BROUWENSTIJN R. (2)",13902.90,"2026-04-09","Nicolas"],["ROBERT Léa (1)",3941.68,"2026-04-04","Nicolas"],
+  ["ROBERT Léa (2)",20299.58,"2026-04-04","Nicolas"],["MALLET Cédric",458.33,"2026-04-03","Nicolas"],
+  ["CHABERT Sandrine",2115.00,"2026-04-03","Nicolas"],["GONTARD MAILYS",17616.17,"2026-04-02","Nicolas"],
+  ["JEBALI Mongi",14186.43,"2026-04-02","Nicolas"],["FULACHIER Eddy",416.67,"2026-04-02","Nicolas"],
+  ["SEBASTIEN",18090.39,"2026-04-01","Nicolas"]
+].map(([c,a,d,sp],i)=>({id:"s"+i,clientName:c,amount:a,createdAt:d+"T00:00:00.000Z",status:"active",temperature:"warm",salesperson:sp,store:"BATIMAN AUBENAS",nextFollowupDate:"",expectedCloseDate:"",prenom:"",relanceur:sp}));
+
+// Devis Laurent semaine 12-17 avril — regroupés par client
+const LAURENT_SEEDS=[
+  {id:"l1",clientName:"GRANGE Christine",prenom:"Christine",amount:761.53,
+   createdAt:"2026-04-16T00:00:00.000Z",status:"active",temperature:"warm",salesperson:"Laurent",store:"BATIMAN AUBENAS",nextFollowupDate:"",expectedCloseDate:"",relanceur:"Laurent",
+   commentInit:"Variante Kit Premium : 260 €"},
+  {id:"l2",clientName:"SADOULE Richard",prenom:"Richard",amount:6435.75,
+   createdAt:"2026-04-14T00:00:00.000Z",status:"active",temperature:"warm",salesperson:"Laurent",store:"BATIMAN AUBENAS",nextFollowupDate:"",expectedCloseDate:"",relanceur:"Laurent",
+   commentInit:"Variante : 3 490,32 €"},
+  {id:"l3",clientName:"GLUSZAK Stephan",prenom:"Stephan",amount:8395.97,
+   createdAt:"2026-04-15T00:00:00.000Z",status:"active",temperature:"warm",salesperson:"Laurent",store:"BATIMAN AUBENAS",nextFollowupDate:"",expectedCloseDate:"",relanceur:"Laurent",
+   commentInit:"Variantes : 4 336,08 € / 1 558,60 €"},
+  {id:"l4",clientName:"LEFEVRE Christian",prenom:"Christian",amount:14407.89,
+   createdAt:"2026-04-15T00:00:00.000Z",status:"active",temperature:"warm",salesperson:"Laurent",store:"BATIMAN AUBENAS",nextFollowupDate:"",expectedCloseDate:"",relanceur:"Laurent",
+   commentInit:"Variante : 13 121,89 €"},
+  {id:"l5",clientName:"RISSOAN Stephane",prenom:"Stephane",amount:1563.31,
+   createdAt:"2026-04-15T00:00:00.000Z",status:"active",temperature:"warm",salesperson:"Laurent",store:"BATIMAN AUBENAS",nextFollowupDate:"",expectedCloseDate:"",relanceur:"Laurent",commentInit:""},
+  {id:"l6",clientName:"LEMAIRE D'ANDRADE Marie",prenom:"Marie",amount:6317.67,
+   createdAt:"2026-04-14T00:00:00.000Z",status:"active",temperature:"warm",salesperson:"Laurent",store:"BATIMAN AUBENAS",nextFollowupDate:"",expectedCloseDate:"",relanceur:"Laurent",commentInit:""},
+  {id:"l7",clientName:"GOURJUX Emmanuelle",prenom:"Emmanuelle",amount:18300.51,
+   createdAt:"2026-04-14T00:00:00.000Z",status:"active",temperature:"warm",salesperson:"Laurent",store:"BATIMAN AUBENAS",nextFollowupDate:"",expectedCloseDate:"",relanceur:"Laurent",commentInit:""},
+  {id:"l8",clientName:"ANZIO Angélique",prenom:"Angélique",amount:1966.42,
+   createdAt:"2026-04-14T00:00:00.000Z",status:"active",temperature:"warm",salesperson:"Laurent",store:"BATIMAN AUBENAS",nextFollowupDate:"",expectedCloseDate:"",relanceur:"Laurent",commentInit:""},
+  {id:"l9",clientName:"CIVADE Jérôme",prenom:"Jérôme",amount:7242.29,
+   createdAt:"2026-04-14T00:00:00.000Z",status:"active",temperature:"warm",salesperson:"Laurent",store:"BATIMAN AUBENAS",nextFollowupDate:"",expectedCloseDate:"",relanceur:"Laurent",
+   commentInit:"Variante : 5 599,93 €"},
+  {id:"l10",clientName:"PETIT Caroline",prenom:"Caroline",amount:2554.80,
+   createdAt:"2026-04-14T00:00:00.000Z",status:"active",temperature:"warm",salesperson:"Laurent",store:"BATIMAN AUBENAS",nextFollowupDate:"",expectedCloseDate:"",relanceur:"Laurent",commentInit:""},
+  {id:"l11",clientName:"BOZZI Eliane",prenom:"Eliane",amount:3101.27,
+   createdAt:"2026-04-14T00:00:00.000Z",status:"active",temperature:"warm",salesperson:"Laurent",store:"BATIMAN AUBENAS",nextFollowupDate:"",expectedCloseDate:"",relanceur:"Laurent",commentInit:""},
+  {id:"l12",clientName:"VOLLE Michèle",prenom:"Michèle",amount:8847.35,
+   createdAt:"2026-04-13T00:00:00.000Z",status:"active",temperature:"warm",salesperson:"Laurent",store:"BATIMAN AUBENAS",nextFollowupDate:"",expectedCloseDate:"",relanceur:"Laurent",
+   commentInit:"Variante : 8 517,69 €"},
+];
+const TEDDY_SEEDS=[
+  {id:"t1",clientName:"DASSAUD Sophie",prenom:"Sophie",amount:11040.04,
+   createdAt:"2026-04-16T00:00:00.000Z",status:"active",temperature:"warm",salesperson:"Teddy",store:"BATIMAN AUBENAS",nextFollowupDate:"",expectedCloseDate:"",relanceur:"Teddy",
+   commentInit:"Variantes : 10 355,92 € / 5 314,47 € / 4 725,15 €"},
+  {id:"t2",clientName:"DEFOSSE Isabelle",prenom:"Isabelle",amount:8277.47,
+   createdAt:"2026-04-16T00:00:00.000Z",status:"active",temperature:"warm",salesperson:"Teddy",store:"BATIMAN AUBENAS",nextFollowupDate:"",expectedCloseDate:"",relanceur:"Teddy",commentInit:""},
+  {id:"t3",clientName:"PLANTIER Nathalie",prenom:"Nathalie",amount:14350.45,
+   createdAt:"2026-04-15T00:00:00.000Z",status:"active",temperature:"warm",salesperson:"Teddy",store:"BATIMAN AUBENAS",nextFollowupDate:"",expectedCloseDate:"",relanceur:"Teddy",
+   commentInit:"Variantes : 13 064,24 € / 823,51 €"},
+  {id:"t4",clientName:"MARCHIAL Christophe",prenom:"Christophe",amount:3872.19,
+   createdAt:"2026-04-15T00:00:00.000Z",status:"active",temperature:"warm",salesperson:"Teddy",store:"BATIMAN AUBENAS",nextFollowupDate:"",expectedCloseDate:"",relanceur:"Teddy",
+   commentInit:"Variante Kit Premium : 896,28 €"},
+  {id:"t5",clientName:"CALLOT Emile-François",prenom:"Emile-François",amount:3001.07,
+   createdAt:"2026-04-15T00:00:00.000Z",status:"active",temperature:"warm",salesperson:"Teddy",store:"BATIMAN AUBENAS",nextFollowupDate:"",expectedCloseDate:"",relanceur:"Teddy",
+   commentInit:"Variantes : 2 924,51 € / 2 737,55 €"},
+  {id:"t6",clientName:"SORMONTE Nathalie",prenom:"Nathalie",amount:1332.50,
+   createdAt:"2026-04-15T00:00:00.000Z",status:"active",temperature:"warm",salesperson:"Teddy",store:"BATIMAN AUBENAS",nextFollowupDate:"",expectedCloseDate:"",relanceur:"Teddy",commentInit:""},
+  {id:"t7",clientName:"KORSU Rhami",prenom:"Rhami",amount:27397.12,
+   createdAt:"2026-04-14T00:00:00.000Z",status:"active",temperature:"warm",salesperson:"Teddy",store:"BATIMAN AUBENAS",nextFollowupDate:"",expectedCloseDate:"",relanceur:"Teddy",
+   commentInit:"Variantes : 14 464,84 € (x2)"},
+  {id:"t8",clientName:"LAILLIER Dominique",prenom:"Dominique",amount:4873.58,
+   createdAt:"2026-04-14T00:00:00.000Z",status:"active",temperature:"warm",salesperson:"Teddy",store:"BATIMAN AUBENAS",nextFollowupDate:"",expectedCloseDate:"",relanceur:"Teddy",
+   commentInit:"Variante : 4 275,07 €"},
+  {id:"t9",clientName:"KMV CONCEPT",prenom:"",amount:27397.12,
+   createdAt:"2026-04-14T00:00:00.000Z",status:"active",temperature:"warm",salesperson:"Teddy",store:"BATIMAN AUBENAS",nextFollowupDate:"",expectedCloseDate:"",relanceur:"Teddy",
+   commentInit:"Variantes : 14 464,84 € (x2) — 3 devis du 13 au 14 avril"},
+  {id:"t10",clientName:"JOUANY Danielle",prenom:"Danielle",amount:2914.47,
+   createdAt:"2026-04-13T00:00:00.000Z",status:"active",temperature:"warm",salesperson:"Teddy",store:"BATIMAN AUBENAS",nextFollowupDate:"",expectedCloseDate:"",relanceur:"Teddy",commentInit:""},
+];
+
+const BENOIT_SEEDS=[
+  {id:"b1",clientName:"BARKOUS Amine",prenom:"Amine",amount:1052.11,
+   createdAt:"2026-04-16T00:00:00.000Z",status:"active",temperature:"warm",salesperson:"Benoit",store:"VIDALOT MENUISERIE",nextFollowupDate:"",expectedCloseDate:"",relanceur:"Benoit",commentInit:""},
+  {id:"b2",clientName:"HOARAU Stéphanie",prenom:"Stéphanie",amount:8967.82,
+   createdAt:"2026-04-15T00:00:00.000Z",status:"active",temperature:"warm",salesperson:"Benoit",store:"VIDALOT MENUISERIE",nextFollowupDate:"",expectedCloseDate:"",relanceur:"Benoit",commentInit:""},
+  {id:"b3",clientName:"OBIN",prenom:"",amount:20656.33,
+   createdAt:"2026-04-15T00:00:00.000Z",status:"active",temperature:"warm",salesperson:"Benoit",store:"VIDALOT MENUISERIE",nextFollowupDate:"",expectedCloseDate:"",relanceur:"Benoit",commentInit:""},
+  {id:"b4",clientName:"YAHIAOUI Mehdi",prenom:"Mehdi",amount:13250.16,
+   createdAt:"2026-04-15T00:00:00.000Z",status:"active",temperature:"warm",salesperson:"Benoit",store:"VIDALOT MENUISERIE",nextFollowupDate:"",expectedCloseDate:"",relanceur:"Benoit",
+   commentInit:"Variante : 1 249,00 €"},
+  {id:"b5",clientName:"CHANUT Lucie",prenom:"Lucie",amount:20607.54,
+   createdAt:"2026-04-15T00:00:00.000Z",status:"active",temperature:"warm",salesperson:"Benoit",store:"VIDALOT MENUISERIE",nextFollowupDate:"",expectedCloseDate:"",relanceur:"Benoit",
+   commentInit:"Client suivi par Céline COSMA. Variantes : 15 147,89 € / 5 471,70 € / 2 315,00 € / 1 604,08 € / 1 469,00 €"},
+  {id:"b6",clientName:"BEROULLE Lilian et Cindy",prenom:"",amount:26990.00,
+   createdAt:"2026-04-13T00:00:00.000Z",status:"active",temperature:"warm",salesperson:"Benoit",store:"VIDALOT MENUISERIE",nextFollowupDate:"",expectedCloseDate:"",relanceur:"Benoit",
+   commentInit:"Variantes : 7 552,64 € / 3 100,00 €"},
+];
+
+const PISCINE_SEEDS=[
+  {id:"p1",clientName:"DEBOURG / MURE Pascal",prenom:"Pascal",amount:17084.58,
+   createdAt:"2026-04-16T00:00:00.000Z",status:"active",temperature:"warm",salesperson:"Christel",store:"V.PISCINE",nextFollowupDate:"",expectedCloseDate:"",relanceur:"Christel",
+   commentInit:"Kit Premium — Devis DVE0005579"},
+];
+const gid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+const fmtE=n=>new Intl.NumberFormat("fr-FR",{style:"currency",currency:"EUR",maximumFractionDigits:0}).format(n||0);
+const fmtD=iso=>{if(!iso)return"—";return new Date(iso).toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit",year:"numeric"});};
+const fmtDT=iso=>{if(!iso)return"—";return new Date(iso).toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"});};
+const fmtM=v=>{if(!v)return"—";const[y,m]=v.split("-");return MFR[+m-1]+" "+y;};
+const fmtMS=v=>{if(!v)return"—";const[y,m]=v.split("-");return MSH[+m-1]+" "+y;};
+const isOD=d=>d&&new Date(d)<new Date();
+const fmtN=l=>(l.prenom?l.prenom+" ":"")+l.clientName;
+const avgAmt=arr=>arr.length?Math.round(arr.reduce((s,l)=>s+l.amount,0)/arr.length):null;
+
+// State
+let leads=[], fups=[], user="Manager", view="dashboard", lid=null, modal=null, modalData={};
+let filt={sp:"Tous",store:"Tous",status:"active",q:""};
+let sort={col:"createdAt",dir:"desc"};
+let statsFilt={sp:"Tous",store:"Tous",from:"",to:""};
+let dashStore="Tous";
+let relFilt="Tous";
+let objectifs={}; // {sp_YYYY-MM: montant}
+
+// ─── MODE CLOUD JSONBin ───────────────────────────────────────
+const JBIN_URL = "https://api.jsonbin.io/v3/b";
+let _apiKey  = localStorage.getItem("sc_apikey") || "";
+let _binId   = localStorage.getItem("sc_binid")  || "";
+let _cloudOK = false;
+let _saveTimeout = null;
+let _syncStatus  = "idle";
+
+function setSyncStatus(s, msg){
+  _syncStatus = s;
+  const el = document.getElementById("sync_status");
+  if(!el) return;
+  const cfg = {
+    idle:    {txt:"",                bg:"transparent", col:"#9ca3af"},
+    saving:  {txt:"⏳ Sync…",        bg:"#fefce8",     col:"#d97706"},
+    saved:   {txt:"☁️ Sauvé",        bg:"#f0fdf4",     col:"#16a34a"},
+    error:   {txt:"❌ "+(msg||"Erreur"), bg:"#fef2f2", col:"#dc2626"},
+    offline: {txt:"💾 Local uniquement", bg:"#f9fafb", col:"#9ca3af"},
+    cloud:   {txt:"☁️ Cloud actif",   bg:"#eef2ff",    col:"#4f46e5"},
+  }[s] || {};
+  el.textContent = cfg.txt || "";
+  el.style.cssText = `font-size:11px;font-weight:600;color:${cfg.col};background:${cfg.bg};border-radius:6px;padding:${cfg.txt?"3px 8px":"0"};transition:all .3s;cursor:${s==="offline"?"pointer":"default"}`;
+  if(s==="offline") el.onclick = ()=>openModal("cloud");
+  else el.onclick = null;
+}
+
+async function cloudSave(){
+  if(!_apiKey || !_binId) return false;
+  try {
+    const r = await fetch(`${JBIN_URL}/${_binId}`, {
+      method:"PUT",
+      headers:{"Content-Type":"application/json","X-Master-Key":_apiKey},
+      body: JSON.stringify({leads, fups, objectifs, savedAt: new Date().toISOString()})
+    });
+    return r.ok;
+  } catch { return false; }
+}
+
+async function cloudLoad(){
+  if(!_apiKey || !_binId) return false;
+  try {
+    const r = await fetch(`${JBIN_URL}/${_binId}/latest`, {
+      headers:{"X-Master-Key":_apiKey}
+    });
+    if(!r.ok) return false;
+    const d = await r.json();
+    const rec = d.record;
+    if(rec && Array.isArray(rec.leads) && rec.leads.length > 0){
+      leads = rec.leads; fups = rec.fups||[]; objectifs = rec.objectifs||{};
+      localStorage.setItem("sc_leads", JSON.stringify(leads));
+      localStorage.setItem("sc_fups",  JSON.stringify(fups));
+      localStorage.setItem("sc_obj",   JSON.stringify(objectifs));
+      return true;
+    }
+    return false;
+  } catch { return false; }
+}
+
+async function initCloud(){
+  if(!_apiKey || !_binId){ setSyncStatus("offline"); return; }
+  setSyncStatus("saving");
+  const ok = await cloudLoad();
+  _cloudOK = ok;
+  setSyncStatus(ok ? "cloud" : "error", ok ? "" : "Clé invalide");
+  if(ok) { setTimeout(()=>setSyncStatus("idle"),2000); render(); }
+}
+
+function save(){
+  localStorage.setItem("sc_leads", JSON.stringify(leads));
+  localStorage.setItem("sc_fups",  JSON.stringify(fups));
+  localStorage.setItem("sc_obj",   JSON.stringify(objectifs));
+  if(_apiKey && _binId){
+    setSyncStatus("saving");
+    clearTimeout(_saveTimeout);
+    _saveTimeout = setTimeout(async()=>{
+      const ok = await cloudSave();
+      setSyncStatus(ok ? "saved" : "error", ok ? "" : "Sync échouée");
+      if(ok) setTimeout(()=>setSyncStatus("idle"), 2500);
+    }, 800);
+  } else {
+    setSyncStatus("offline");
+  }
+}
+
+function load(){
+  const l=localStorage.getItem("sc_leads"), f=localStorage.getItem("sc_fups"), o=localStorage.getItem("sc_obj");
+  leads = l ? JSON.parse(l) : SEEDS;
+  fups  = f ? JSON.parse(f) : [];
+  objectifs = o ? JSON.parse(o) : {};
+  const existingIds = new Set(leads.map(x=>x.id));
+  const toAdd = [...TEDDY_SEEDS,...BENOIT_SEEDS,...PISCINE_SEEDS].filter(t=>!existingIds.has(t.id));
+  if(toAdd.length){
+    toAdd.forEach(l=>{ if(l.commentInit){ fups.push({id:gid(),leadId:l.id,type:"call",comment:l.commentInit,temperature:l.temperature,expectedCloseDate:"",nextFollowupDate:"",outcome:"pending",lostReason:"",author:"Secrétaire",date:l.createdAt}); }});
+    leads=[...leads,...toAdd]; save();
+  }
+}
+
+// ─── MODAL CONFIGURATION CLOUD ───────────────────────────────
+function modalCloudHTML(){
+  const isConfigured = _apiKey && _binId;
+  return `<div class="modal" onclick="event.stopPropagation()" style="width:520px">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px">
+      <div>
+        <div style="font-weight:700;font-size:16px">☁️ Partage réseau / Cloud</div>
+        <div style="font-size:12px;color:#9ca3af;margin-top:2px">Accédez à vos données depuis plusieurs PC sans rien installer</div>
+      </div>
+      <button onclick="closeModal()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#9ca3af">×</button>
+    </div>
+
+    ${isConfigured ? `<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#16a34a;font-weight:600">✅ Cloud configuré et actif — vos données se synchronisent automatiquement</div>` : ""}
+
+    <div style="background:#eef2ff;border:1px solid #c7d2fe;border-radius:8px;padding:14px;margin-bottom:16px">
+      <div style="font-weight:600;color:#4f46e5;margin-bottom:10px">📋 Configuration en 3 étapes (une seule fois)</div>
+      <div style="font-size:12px;color:#374151;line-height:1.8">
+        <div><b>1.</b> Allez sur <a href="https://jsonbin.io" target="_blank" style="color:#4f46e5">jsonbin.io</a> → créez un compte gratuit</div>
+        <div><b>2.</b> Dans votre espace → copiez votre <b>Master Key</b> (commence par $2b)</div>
+        <div><b>3.</b> Collez-la ci-dessous et cliquez "Activer"</div>
+      </div>
+    </div>
+
+    <div class="field"><label class="lbl">🔑 Votre Master Key JSONBin</label>
+      <input id="cloud_key" type="password" placeholder="$2b$10$xxxxxxxxxxxxx" value="${_apiKey}"
+        style="width:100%;border:1px solid #d1d5db;border-radius:7px;padding:9px 12px;font-size:13px">
+    </div>
+
+    ${_binId ? `<div style="font-size:11px;color:#9ca3af;margin-bottom:12px">ID coffre actuel : <code>${_binId}</code></div>` : ""}
+
+    <div id="cloud_msg" style="display:none;padding:10px 12px;border-radius:7px;font-size:12px;font-weight:600;margin-bottom:12px"></div>
+
+    <div style="display:flex;gap:8px">
+      <button onclick="closeModal()" style="flex:1;background:#f3f4f6;border:1px solid #d1d5db;border-radius:7px;padding:9px;font-size:12px;cursor:pointer">Annuler</button>
+      ${isConfigured?`<button onclick="cloudDisconnect()" style="flex:1;background:#fef2f2;color:#dc2626;border:1px solid #fca5a5;border-radius:7px;padding:9px;font-size:12px;cursor:pointer">Déconnecter</button>`:""}
+      <button onclick="cloudConnect()" style="flex:2;background:#4f46e5;color:#fff;border:none;border-radius:7px;padding:9px;font-size:13px;font-weight:700;cursor:pointer">
+        ${isConfigured?"🔄 Reconnecter":"☁️ Activer le cloud"}
+      </button>
+    </div>
+    <div style="margin-top:14px;padding:10px 12px;background:#fffbe6;border:1px solid #ffe58f;border-radius:7px;font-size:11px;color:#ad6800">
+      💡 <b>Gratuit</b> — JSONBin propose un espace gratuit largement suffisant. Vos données sont chiffrées et privées.<br>
+      Une fois configuré, <b>toutes vos personnes</b> ouvrent le même fichier HTML et voient les mêmes données.
+    </div>
+  </div>`;
+}
+
+window.cloudConnect = async function(){
+  const key = document.getElementById("cloud_key")?.value?.trim();
+  if(!key){ alert("Collez votre Master Key"); return; }
+  const msg = document.getElementById("cloud_msg");
+  msg.style.display="block"; msg.style.background="#fefce8"; msg.style.color="#d97706"; msg.textContent="⏳ Connexion en cours…";
+
+  // Créer un nouveau bin avec les données actuelles
+  try {
+    const r = await fetch(JBIN_URL, {
+      method:"POST",
+      headers:{"Content-Type":"application/json","X-Master-Key":key,"X-Bin-Name":"SuiviCommercial","X-Bin-Private":"true"},
+      body: JSON.stringify({leads, fups, objectifs, createdAt: new Date().toISOString()})
+    });
+    if(!r.ok){ msg.style.background="#fef2f2"; msg.style.color="#dc2626"; msg.textContent="❌ Clé invalide — vérifiez votre Master Key sur jsonbin.io"; return; }
+    const d = await r.json();
+    _apiKey = key; _binId = d.metadata?.id || d.record?._id || "";
+    localStorage.setItem("sc_apikey", _apiKey);
+    localStorage.setItem("sc_binid",  _binId);
+    _cloudOK = true;
+    msg.style.background="#f0fdf4"; msg.style.color="#16a34a";
+    msg.textContent=`✅ Cloud activé ! ID: ${_binId} — Partagez ce fichier HTML avec vos collègues, ils verront les mêmes données.`;
+    setSyncStatus("cloud");
+    setTimeout(()=>{ closeModal(); setSyncStatus("idle"); }, 3000);
+  } catch(e) {
+    msg.style.background="#fef2f2"; msg.style.color="#dc2626";
+    msg.textContent="❌ Erreur réseau : "+e.message;
+  }
+};
+
+window.cloudDisconnect = function(){
+  if(!confirm("Déconnecter le cloud ? Vos données locales restent intactes.")) return;
+  _apiKey=""; _binId=""; _cloudOK=false;
+  localStorage.removeItem("sc_apikey"); localStorage.removeItem("sc_binid");
+  setSyncStatus("offline"); closeModal();
+};
+
+const boss=()=>user==="Manager"||SECS.includes(user);
+const vSps=()=>boss()?SPS:[user];
+const aL=()=>leads.filter(l=>l.status==="active");
+const myA=()=>boss()?aL():aL().filter(l=>l.salesperson===user);
+const allU=()=>["Manager",...SECS.filter(s=>!SPS.includes(s)),...SPS];
+
+function fc(sp){
+  const src=sp?aL().filter(l=>l.salesperson===sp):aL();
+  return src.reduce((a,l)=>({hot:a.hot+(l.temperature==="hot"?l.amount:0),warm:a.warm+(l.temperature==="warm"?l.amount:0),cold:a.cold+(l.temperature==="cold"?l.amount:0),total:a.total+l.amount,count:a.count+1}),{hot:0,warm:0,cold:0,total:0,count:0});
+}
+
+function buildFC(){
+  const m={};
+  myA().filter(l=>l.expectedCloseDate).forEach(l=>{
+    const k=l.expectedCloseDate;
+    if(!m[k])m[k]={hot:0,warm:0,cold:0,total:0,leads:[]};
+    m[k][l.temperature]+=l.amount;m[k].total+=l.amount;m[k].leads.push(l);
+  });
+  return Object.entries(m).sort((a,b)=>a[0].localeCompare(b[0])).map(([k,v])=>({k,...v}));
+}
+
+function go(v,l=null){view=v;lid=l;render();}
+function openModal(m,d={}){modal=m;modalData=d;render();}
+function closeModal(){modal=null;render();}
+
+function el(tag,cls,attrs,ch){
+  const e=document.createElement(tag);
+  if(cls)e.className=cls;
+  if(attrs)Object.assign(e,attrs);
+  if(typeof ch==="string")e.innerHTML=ch;
+  else if(Array.isArray(ch))ch.forEach(c=>{if(c!=null)e.appendChild(typeof c==="string"?document.createTextNode(c):c);});
+  return e;
+}
+function div(cls,ch,style){const e=el("div",cls,style?{style}:null,ch);return e;}
+function badge(t){return div("badge "+t,[TEMP[t].e+" "+TEMP[t].l]);}
+function statusBadge(l){
+  if(l.status==="active")return badge(l.temperature);
+  if(l.status==="won")return div("badge won",["✅ Gagné"]);
+  return div("badge lost",["❌ Perdu"]);
+}
+function tag(cls,txt,style){const e=div(cls,[txt]);if(style)e.style.cssText=style;return e;}
+
+// ─── DASHBOARD ───────────────────────────────────────────────
+function dashHTML(){
+  // Filtre magasin
+  const dFilter=l=>dashStore==="Tous"||l.store===dashStore;
+  const dAL=()=>aL().filter(dFilter);
+  const dfc=(sp)=>{
+    const src=sp?dAL().filter(l=>l.salesperson===sp):dAL();
+    return src.reduce((a,l)=>({hot:a.hot+(l.temperature==="hot"?l.amount:0),warm:a.warm+(l.temperature==="warm"?l.amount:0),cold:a.cold+(l.temperature==="cold"?l.amount:0),total:a.total+l.amount,count:a.count+1}),{hot:0,warm:0,cold:0,total:0,count:0});
+  };
+  const dmfc=(()=>{
+    const m={};
+    (boss()?dAL():dAL().filter(l=>l.salesperson===user)).filter(l=>l.expectedCloseDate).forEach(l=>{
+      const k=l.expectedCloseDate;
+      if(!m[k])m[k]={hot:0,warm:0,cold:0,total:0,leads:[]};
+      m[k][l.temperature]+=l.amount;m[k].total+=l.amount;m[k].leads.push(l);
+    });
+    return Object.entries(m).sort((a,b)=>a[0].localeCompare(b[0])).map(([k,v])=>({k,...v}));
+  })();
+
+  const f=dfc(), mfc=dmfc;
+  const won=leads.filter(l=>l.status==="won"&&dFilter(l));
+  const odL=dAL().filter(l=>isOD(l.nextFollowupDate));
+  let html="";
+
+  // FILTRE MAGASIN
+  html+=`<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
+    <span style="font-size:12px;color:#6b7280;font-weight:500">🏪 Magasin :</span>
+    ${["Tous",...STORES].map(st=>`
+      <button onclick="dashStore='${st}';render()" style="padding:6px 14px;border-radius:20px;border:${dashStore===st?"none":"1px solid #d1d5db"};background:${dashStore===st?"#4f46e5":"#fff"};color:${dashStore===st?"#fff":"#374151"};font-size:12px;font-weight:${dashStore===st?600:400};cursor:pointer">${st==="Tous"?"Tous les magasins":st}</button>
+    `).join("")}
+  </div>
+  ${dashStore!=="Tous"?`<div style="background:#eef2ff;border:1px solid #c7d2fe;border-radius:8px;padding:8px 14px;font-size:12px;color:#4f46e5;font-weight:600;margin-bottom:14px">📍 Affichage filtré : ${dashStore}</div>`:""}`;
+
+  // KPIs
+  html+=`<div class="grid4">`;
+  [["Tuyau total",fmtE(f.total),"#4f46e5",f.count+" dossiers actifs"],
+   ["🔥 Chaud",fmtE(f.hot),"#cf1322",dAL().filter(x=>x.temperature==="hot").length+" dossiers"],
+   ["🌡️ Tiède",fmtE(f.warm),"#ad6800",dAL().filter(x=>x.temperature==="warm").length+" dossiers"],
+   ["❄️ Froid",fmtE(f.cold),"#0958d9",dAL().filter(x=>x.temperature==="cold").length+" dossiers"]
+  ].forEach(([l,v,c,s])=>{
+    html+=`<div class="kpi" style="border-left:4px solid ${c}"><div class="lbl">${l}</div><div class="val" style="color:${c}">${v}</div><div class="sub">${s}</div></div>`;
+  });
+  html+=`</div>`;
+
+  // PRÉVISIONNEL
+  html+=`<div class="card"><div class="card-title">📅 CA Prévisionnel par mois</div><div class="card-sub">Basé sur le mois de signature prévu — par température.</div>`;
+  if(!mfc.length){
+    html+=`<div class="empty">Aucun mois de signature saisi.<br><small>Renseignez le mois de signature sur chaque dossier.</small></div>`;
+  } else {
+
+    // Onglets vue
+    html+=`<div style="display:flex;gap:8px;margin-bottom:16px">
+      <button id="fc_tab_total" onclick="switchFcTab('total')" style="padding:7px 16px;border-radius:20px;border:none;background:#4f46e5;color:#fff;font-size:12px;font-weight:600;cursor:pointer">📊 Total</button>
+      ${STORES.map(st=>{
+        const hasData=myA().some(l=>l.expectedCloseDate&&l.store===st);
+        return hasData?`<button id="fc_tab_${st.replace(/[^a-z0-9]/gi,'_')}" onclick="switchFcTab('${st.replace(/'/g,"\\'")}\')" style="padding:7px 16px;border-radius:20px;border:1px solid #d1d5db;background:#fff;color:#374151;font-size:12px;cursor:pointer">${st}</button>`:"";
+      }).join("")}
+    </div>`;
+
+    // Fonction helper pour générer un tableau prévisionnel
+    const makeFcTable=(data,idPrefix)=>{
+      let t=`<div id="fctab_${idPrefix}"><table style="table-layout:fixed;width:100%"><thead><tr>
+        <th style="width:130px">Mois</th>
+        <th style="text-align:right;width:110px">🔥 Chaud</th>
+        <th style="text-align:right;width:110px">🌡️ Tiède</th>
+        <th style="text-align:right;width:110px">❄️ Froid</th>
+        <th style="text-align:right;width:120px">Total prévu</th>
+        <th style="text-align:center;width:70px">Dossiers</th>
+        <th style="text-align:center;width:70px">Détail</th>
+      </tr></thead><tbody>`;
+      let tH=0,tW=0,tC=0,tT=0,tN=0;
+      data.forEach(m=>{
+        tH+=m.hot;tW+=m.warm;tC+=m.cold;tT+=m.total;tN+=m.leads.length;
+        const rowId="fc_"+idPrefix+"_"+m.k.replace("-","_");
+        t+=`<tr style="cursor:default;border-bottom:1px solid #f3f4f6">
+          <td style="font-weight:600;padding:11px 10px">${fmtM(m.k)}</td>
+          <td style="text-align:right;color:#cf1322;font-weight:${m.hot?600:400};padding:11px 10px">${m.hot?fmtE(m.hot):"—"}</td>
+          <td style="text-align:right;color:#ad6800;font-weight:${m.warm?600:400};padding:11px 10px">${m.warm?fmtE(m.warm):"—"}</td>
+          <td style="text-align:right;color:#0958d9;font-weight:${m.cold?600:400};padding:11px 10px">${m.cold?fmtE(m.cold):"—"}</td>
+          <td style="text-align:right;font-weight:700;color:#4f46e5;font-size:14px;padding:11px 10px">${fmtE(m.total)}</td>
+          <td style="text-align:center;color:#6b7280;padding:11px 10px">${m.leads.length}</td>
+          <td style="text-align:center;padding:11px 10px">
+            <button onclick="toggleFcDetail('${rowId}')" id="btn_${rowId}" style="background:#f0f9ff;border:1px solid #bae6fd;color:#0369a1;border-radius:20px;padding:3px 10px;font-size:11px;cursor:pointer;font-weight:600">▼ voir</button>
+          </td>
+        </tr>
+        <tr id="${rowId}" style="display:none;background:#f8faff">
+          <td colspan="7" style="padding:0 10px 14px 24px">
+            ${m.leads.map(l=>`
+              <div onclick="go('lead','${l.id}')" style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;margin:5px 0;background:#fff;border-radius:8px;border:1px solid #e0e7ff;cursor:pointer">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <span style="font-size:14px">${TEMP[l.temperature].e}</span>
+                  <div>
+                    <div style="font-weight:600;font-size:13px">${fmtN(l)}</div>
+                    <div style="font-size:11px;color:#9ca3af">${l.salesperson} · ${l.store||""}</div>
+                  </div>
+                </div>
+                <div style="text-align:right">
+                  <div style="font-weight:700;color:#4f46e5">${fmtE(l.amount)}</div>
+                  ${l.nextFollowupDate?`<div style="font-size:11px;color:${isOD(l.nextFollowupDate)?"#dc2626":"#9ca3af"}">${isOD(l.nextFollowupDate)?"⚠ En retard":"🔔 "+fmtD(l.nextFollowupDate)}</div>`:""}
+                </div>
+              </div>`).join("")}
+          </td>
+        </tr>`;
+      });
+      t+=`<tr style="border-top:2px solid #e8eaed;background:#f9fafb;font-weight:700;cursor:default">
+        <td style="padding:11px 10px">TOTAL</td>
+        <td style="text-align:right;color:#cf1322;padding:11px 10px">${fmtE(tH)}</td>
+        <td style="text-align:right;color:#ad6800;padding:11px 10px">${fmtE(tW)}</td>
+        <td style="text-align:right;color:#0958d9;padding:11px 10px">${fmtE(tC)}</td>
+        <td style="text-align:right;color:#4f46e5;font-size:15px;padding:11px 10px">${fmtE(tT)}</td>
+        <td style="text-align:center;color:#6b7280;padding:11px 10px">${tN}</td>
+        <td></td>
+      </tr></tbody></table></div>`;
+      return t;
+    };
+
+    // Vue TOTAL
+    html+=makeFcTable(mfc,"total");
+
+    // Vue par magasin (cachées par défaut)
+    STORES.forEach(st=>{
+      const stId=st.replace(/[^a-z0-9]/gi,'_');
+      const stData={};
+      myA().filter(l=>l.expectedCloseDate&&l.store===st).forEach(l=>{
+        const k=l.expectedCloseDate;
+        if(!stData[k])stData[k]={hot:0,warm:0,cold:0,total:0,leads:[]};
+        stData[k][l.temperature]+=l.amount;stData[k].total+=l.amount;stData[k].leads.push(l);
+      });
+      const stMfc=Object.entries(stData).sort((a,b)=>a[0].localeCompare(b[0])).map(([k,v])=>({k,...v}));
+      if(!stMfc.length)return;
+      html+=`<div id="fctab_${stId}" style="display:none">${makeFcTable(stMfc,stId).replace(`id="fctab_${stId}"`,'').replace('<div ','<div ')}</div>`;
+    });
+
+    const sans=myA().filter(l=>!l.expectedCloseDate);
+    if(sans.length){
+      const tags=sans.map(l=>`<span style="cursor:pointer;font-size:11px;background:#fff;border:1px solid #ffe58f;border-radius:10px;padding:2px 8px;margin:2px;display:inline-block" onclick="go('lead','${l.id}')">${fmtN(l)} (${l.salesperson})</span>`).join("");
+      html+=`<div class="alert-y">⚠ ${sans.length} dossier(s) sans mois de signature : ${tags}</div>`;
+    }
+  }
+  html+=`</div>`;
+
+  // RÉSUMÉ VENDEURS
+  html+=`<div class="card"><div class="card-title">🏆 Résumé par vendeur</div><table><thead><tr><th>Vendeur</th><th>🔥 Chaud</th><th>🌡️ Tiède</th><th>❄️ Froid</th><th>Total</th><th>Dossiers</th></tr></thead><tbody>`;
+  vSps().forEach(sp=>{
+    const f2=dfc(sp);
+    if(!f2.count)return;
+    html+=`<tr class="tr-click" onclick="state_filt_sp('${sp}');go('pipeline')"><td style="font-weight:500">${sp}</td><td style="color:#cf1322;font-weight:600">${fmtE(f2.hot)}</td><td style="color:#ad6800;font-weight:600">${fmtE(f2.warm)}</td><td style="color:#0958d9;font-weight:600">${fmtE(f2.cold)}</td><td style="font-weight:700">${fmtE(f2.total)}</td><td style="color:#6b7280">${f2.count}</td></tr>`;
+  });
+  html+=`</tbody></table></div>`;
+
+  // RELANCES 7J
+  const in7=new Date();in7.setDate(in7.getDate()+7);
+  const list=dAL().filter(l=>l.nextFollowupDate&&new Date(l.nextFollowupDate)<=in7&&(boss()||l.salesperson===user)).sort((a,b)=>new Date(a.nextFollowupDate)-new Date(b.nextFollowupDate));
+  html+=`<div class="card"><div class="card-title">⏰ Relances à venir (7 jours)</div>`;
+  if(!list.length){html+=`<div class="empty">Aucune relance prévue dans les 7 prochains jours 🎉</div>`;}
+  else list.forEach(l=>{
+    const ov=isOD(l.nextFollowupDate);
+    html+=`<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-radius:8px;cursor:pointer;margin-bottom:5px;background:${ov?"#fff5f5":"#f9fafb"};border:1px solid ${ov?"#fca5a5":"#e8eaed"}" onclick="go('lead','${l.id}')">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:16px">${TEMP[l.temperature].e}</span>
+        <div><div style="font-weight:600">${fmtN(l)}</div><div style="font-size:11px;color:#9ca3af">${l.salesperson}${l.expectedCloseDate?" · Signature : "+fmtM(l.expectedCloseDate):""}</div></div>
+      </div>
+      <div style="text-align:right"><div style="font-weight:700;color:#4f46e5">${fmtE(l.amount)}</div><div style="font-size:11px;color:${ov?"#dc2626":"#6b7280"};font-weight:${ov?600:400}">${ov?"⚠ En retard":fmtD(l.nextFollowupDate)}</div></div>
+    </div>`;
+  });
+  html+=`</div>`;
+  return html;
+}
+
+// ─── PIPELINE ────────────────────────────────────────────────
+function pipelineHTML(){
+  const filtered=leads.filter(l=>{
+    if(filt.status!=="all"&&l.status!==filt.status)return false;
+    if(filt.sp!=="Tous"&&l.salesperson!==filt.sp)return false;
+    if(filt.store!=="Tous"&&l.store!==filt.store)return false;
+    if(filt.q&&!l.clientName.toLowerCase().includes(filt.q.toLowerCase()))return false;
+    if(!boss()&&l.salesperson!==user)return false;
+    return true;
+  });
+
+  // Appliquer le tri
+  const TEMP_ORDER={hot:0,warm:1,cold:2};
+  const sortFns={
+    clientName:(a,b)=>a.clientName.localeCompare(b.clientName),
+    amount:(a,b)=>a.amount-b.amount,
+    salesperson:(a,b)=>a.salesperson.localeCompare(b.salesperson),
+    store:(a,b)=>(a.store||"").localeCompare(b.store||""),
+    createdAt:(a,b)=>new Date(a.createdAt)-new Date(b.createdAt),
+    expectedCloseDate:(a,b)=>{if(!a.expectedCloseDate)return 1;if(!b.expectedCloseDate)return-1;return a.expectedCloseDate.localeCompare(b.expectedCloseDate);},
+    nextFollowupDate:(a,b)=>{if(!a.nextFollowupDate)return 1;if(!b.nextFollowupDate)return-1;return new Date(a.nextFollowupDate)-new Date(b.nextFollowupDate);},
+    temperature:(a,b)=>(TEMP_ORDER[a.temperature]??9)-(TEMP_ORDER[b.temperature]??9),
+  };
+  const fn=sortFns[sort.col]||sortFns.createdAt;
+  filtered.sort((a,b)=>sort.dir==="asc"?fn(a,b):-fn(a,b));
+
+  const thStyle="cursor:pointer;user-select:none;white-space:nowrap;";
+  const arrow=col=>{
+    if(sort.col!==col)return`<span style="color:#d1d5db;margin-left:3px">⇅</span>`;
+    // Pour température : asc = 🔥→❄️, desc = ❄️→🔥
+    if(col==="temperature")return sort.dir==="asc"?`<span style="margin-left:3px">🔥→❄️</span>`:`<span style="margin-left:3px">❄️→🔥</span>`;
+    return sort.dir==="asc"?`<span style="color:#4f46e5;margin-left:3px">↑</span>`:`<span style="color:#4f46e5;margin-left:3px">↓</span>`;
+  };
+  const th=(col,label)=>`<th style="${thStyle}color:${sort.col===col?"#4f46e5":"#9ca3af"}" onclick="toggleSort('${col}')">${label}${arrow(col)}</th>`;
+
+  let html=`<div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
+    <span style="font-size:12px;color:#6b7280;font-weight:500">🏪</span>
+    ${["Tous",...STORES].map(st=>`<button onclick="filt.store='${st==="Tous"?"Tous":st}';render()" style="padding:6px 14px;border-radius:20px;border:${filt.store===(st==="Tous"?"Tous":st)?"none":"1px solid #d1d5db"};background:${filt.store===(st==="Tous"?"Tous":st)?"#4f46e5":"#fff"};color:${filt.store===(st==="Tous"?"Tous":st)?"#fff":"#374151"};font-size:12px;font-weight:${filt.store===(st==="Tous"?"Tous":st)?600:400};cursor:pointer">${st==="Tous"?"Tous":st}</button>`).join("")}
+  </div>
+  <div class="flt-bar">
+    <input type="text" placeholder="🔍 Rechercher…" value="${filt.q||""}" oninput="filt.q=this.value;render()" style="max-width:180px">`;
+  if(boss()){
+    html+=`<select onchange="filt.sp=this.value;render()"><option value="Tous">Tous les vendeurs</option>${SPS.map(sp=>`<option${sp===filt.sp?" selected":""}>${sp}</option>`).join("")}</select>`;
+  }
+  html+=`<select onchange="filt.status=this.value;render()"><option value="active"${filt.status==="active"?" selected":""}>Actifs</option><option value="won"${filt.status==="won"?" selected":""}>Gagnés</option><option value="lost"${filt.status==="lost"?" selected":""}>Perdus</option><option value="all"${filt.status==="all"?" selected":""}>Tous</option></select>`;
+  html+=`<span style="margin-left:auto;font-size:11px;color:#9ca3af">${filtered.length} dossier${filtered.length!==1?"s":""} · <span style="color:#6b7280">Cliquez sur une colonne pour trier</span></span></div>`;
+
+  html+=`<div class="card"><table><thead><tr>
+    ${th("clientName","Client")}
+    ${th("store","Magasin")}
+    ${th("salesperson","Vendeur")}
+    ${th("amount","Devis")}
+    ${th("temperature","Statut / Temp.")}
+    ${th("expectedCloseDate","Mois signature")}
+    ${th("nextFollowupDate","Relance")}
+    ${th("createdAt","Créé le")}
+    <th style="color:#9ca3af">Âge</th>
+    <th style="color:#9ca3af">Historique</th>
+  </tr></thead><tbody>`;
+  if(!filtered.length){html+=`<tr><td colspan="10" class="empty">Aucun dossier trouvé</td></tr>`;}
+  filtered.forEach(l=>{
+    const ov=l.status==="active"&&isOD(l.nextFollowupDate);
+    const sb=l.status==="active"?`<span class="badge ${l.temperature}">${TEMP[l.temperature].e} ${TEMP[l.temperature].l}</span>`:l.status==="won"?`<span class="badge won">✅ Gagné</span>`:`<span class="badge lost">❌ Perdu</span>`;
+    const lFups=fups.filter(f=>f.leadId===l.id).sort((a,b)=>new Date(b.date)-new Date(a.date));
+    const lastFup=lFups[0];
+    const ct=lastFup?CTYPES.find(c=>c[0]===lastFup.type):null;
+    // Âge du dossier
+    const ageJ=Math.floor((new Date()-new Date(l.createdAt))/86400000);
+    const lastActJ=lastFup?Math.floor((new Date()-new Date(lastFup.date))/86400000):ageJ;
+    const ageColor=lastActJ>30?"#dc2626":lastActJ>15?"#d97706":"#16a34a";
+    const ageTxt=lastActJ>30?`🔴 ${lastActJ}j`:lastActJ>15?`🟡 ${lastActJ}j`:`🟢 ${lastActJ}j`;
+    const relanceur=l.relanceur||l.salesperson;
+    const delegue=relanceur!==l.salesperson&&SECS.includes(relanceur);
+    html+=`<tr class="tr-click" onclick="go('lead','${l.id}')" style="${lastActJ>30&&l.status==="active"?"background:#fff9f9":""}">
+      <td style="font-weight:600">${fmtN(l)}${l.ptype?`<div style="font-size:10px;color:#9ca3af">${l.ptype}</div>`:""}</td>
+      <td><span class="store-tag">${l.store||"—"}</span></td>
+      <td>
+        <div style="font-weight:500;color:#374151">${l.salesperson}</div>
+        ${delegue?`<div style="font-size:10px;margin-top:2px;color:#7c3aed;font-weight:600">📋 → ${relanceur}</div>`:""}
+      </td>
+      <td style="font-weight:700;color:#4f46e5">${fmtE(l.amount)}</td>
+      <td>${sb}</td>
+      <td style="color:${l.expectedCloseDate?"#4f46e5":"#d1d5db"};font-weight:${l.expectedCloseDate?600:400}">${l.expectedCloseDate?fmtM(l.expectedCloseDate):"—"}</td>
+      <td style="color:${ov?"#dc2626":"#6b7280"};font-weight:${ov?600:400}">${ov?"⚠ ":""}${fmtD(l.nextFollowupDate)}</td>
+      <td style="color:#9ca3af;font-size:11px">${fmtD(l.createdAt)}</td>
+      <td style="font-size:11px;font-weight:600;color:${ageColor};white-space:nowrap" title="Dernière activité il y a ${lastActJ} jours">${l.status==="active"?ageTxt:"—"}</td>
+      <td onclick="event.stopPropagation()">
+        ${lFups.length===0
+          ? `<span style="color:#d1d5db;font-size:11px">Aucune</span>`
+          : `<button onclick="openModal('hist',{leadId:'${l.id}'})" style="background:#f0f9ff;border:1px solid #bae6fd;color:#0369a1;border-radius:20px;padding:3px 10px;font-size:11px;cursor:pointer;font-weight:600;white-space:nowrap">
+              📋 ${lFups.length} relance${lFups.length>1?"s":""}
+              ${ct?`<span style="margin-left:4px">${ct[1]}</span>`:""}
+            </button>`
+        }
+      </td>
+    </tr>`;
+  });
+  html+=`</tbody></table></div>`;
+  return html;
+}
+
+// ─── LEAD DETAIL ─────────────────────────────────────────────
+function leadHTML(){
+  const l=leads.find(x=>x.id===lid);
+  if(!l)return"";
+  const lFups=fups.filter(f=>f.leadId===l.id).sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const sb=l.status==="active"?`<span class="badge ${l.temperature}">${TEMP[l.temperature].e} ${TEMP[l.temperature].l}</span>`:l.status==="won"?`<span class="badge won">✅ Gagné</span>${l.signedDirect?'<span style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:20px;padding:2px 8px;font-size:11px;font-weight:600;margin-left:6px">⚡ Vente directe</span>':""}`:l.status==="lost"?`<span class="badge lost">❌ Perdu${l.lostReason?" — "+l.lostReason:""}</span>`:"";
+
+  let html=`<button class="btn-g" onclick="go('pipeline')" style="margin-bottom:14px">← Retour</button>
+  <div class="det-grid">
+    <div class="left-panel">
+      <div class="client-card">
+        <div style="font-weight:700;font-size:17px;margin-bottom:2px">${fmtN(l)}</div>
+        <div style="font-size:11px;color:#9ca3af;margin-bottom:8px">Vendeur : ${l.salesperson}</div>
+        ${l.store?`<div style="margin-bottom:10px"><span class="store-tag">🏪 ${l.store}</span></div>`:""}
+        <div class="client-amount">${fmtE(l.amount)}</div>
+        <div style="margin-bottom:14px">${sb}</div>
+        <div class="info-box">
+          <div class="info-row"><span style="color:#6b7280">📅 Créé le</span><span style="font-weight:600">${fmtD(l.createdAt)}</span></div>
+          <div class="info-row"><span style="color:#6b7280">🔔 Prochaine relance</span><span style="font-weight:600;color:${isOD(l.nextFollowupDate)?"#dc2626":"#374151"}">${fmtD(l.nextFollowupDate)}</span></div>
+          <div class="info-row"><span style="color:#6b7280">🖊 Mois de signature</span><span style="font-weight:600;color:${l.expectedCloseDate?"#4f46e5":"#9ca3af"}">${l.expectedCloseDate?fmtM(l.expectedCloseDate):"Non renseigné"}</span></div>
+          <div class="info-row"><span style="color:#6b7280">📋 Relances</span><span style="font-weight:600">${lFups.length}</span></div>
+          <div class="info-row"><span style="color:#6b7280">👤 Responsable relance</span>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+              <select style="font-size:12px;padding:3px 6px;border-radius:6px;border:1px solid ${(l.relanceur&&l.relanceur!==l.salesperson&&SECS.includes(l.relanceur))?"#7c3aed":"#d1d5db"};cursor:pointer;background:${(l.relanceur&&l.relanceur!==l.salesperson&&SECS.includes(l.relanceur))?"#f5f3ff":"#fff"};color:${(l.relanceur&&l.relanceur!==l.salesperson&&SECS.includes(l.relanceur))?"#7c3aed":"#374151"};font-weight:600" onchange="changeRelanceur('${l.id}',this.value)">
+                ${[...SPS,...secsForStore(l.store)].filter((v,i,a)=>a.indexOf(v)===i).map(r=>`<option value="${r}"${(l.relanceur||l.salesperson)===r?" selected":""}>${r}</option>`).join("")}
+              </select>
+              ${(l.relanceur&&l.relanceur!==l.salesperson)?
+                `<span style="font-size:10px;color:#7c3aed;font-weight:600">📋 Délégué par ${l.salesperson}</span>`
+                :`<span style="font-size:10px;color:#9ca3af">Vendeur propriétaire : ${l.salesperson}</span>`}
+            </div>
+          </div>
+        </div>
+      </div>`;
+  if(l.status==="active"){
+    html+=`<button class="btn-p" style="width:100%;padding:11px" onclick="openModal('fup',{leadId:'${l.id}'})">+ Ajouter une relance</button>`;
+  }
+  html+=`<button class="btn-g" style="width:100%;padding:8px;color:#dc2626;border-color:#fca5a5;font-size:11px" onclick="delLead('${l.id}')">🗑 Supprimer ce dossier</button>
+    </div>
+    <div>
+      <div style="font-weight:600;font-size:14px;margin-bottom:12px">📋 Historique des relances (${lFups.length})</div>`;
+  if(!lFups.length){
+    html+=`<div class="card empty">Aucune relance enregistrée.<br>Cliquez sur « Ajouter une relance ».</div>`;
+  } else {
+    // lFups est trié du plus récent au plus ancien
+    // Pour comparer, on a besoin du suivant (= plus ancien)
+    lFups.forEach((fu,i)=>{
+      const bc=fu.outcome==="won"?"#16a34a":fu.outcome==="lost"?"#9ca3af":"#4f46e5";
+      const ct=CTYPES.find(c=>c[0]===fu.type)||["","?","?"];
+      // Détection changement de température
+      const prevFu=lFups[i+1]; // relance précédente (plus ancienne)
+      const tempChanged=fu.temperature&&prevFu&&prevFu.temperature&&fu.temperature!==prevFu.temperature;
+      const tempArrow=tempChanged?`<div style="display:inline-flex;align-items:center;gap:5px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;margin-bottom:8px">
+        <span>${TEMP[prevFu.temperature].e}</span>
+        <span style="color:#9ca3af">→</span>
+        <span>${TEMP[fu.temperature].e}</span>
+        <span style="color:${TEMP[fu.temperature].color};margin-left:2px">Passé ${TEMP[prevFu.temperature].l} → ${TEMP[fu.temperature].l}</span>
+      </div>`:"";
+      let tags="";
+      if(fu.temperature&&fu.outcome==="pending") tags+=`<span class="badge ${fu.temperature}">${TEMP[fu.temperature].e} ${TEMP[fu.temperature].l}</span>`;
+      if(fu.expectedCloseDate) tags+=`<span class="badge" style="background:#eef2ff;color:#4f46e5;border:1px solid #c7d2fe">🖊 ${fmtM(fu.expectedCloseDate)}</span>`;
+      if(fu.nextFollowupDate&&fu.outcome==="pending") tags+=`<span class="badge" style="background:#f0f9ff;color:#0284c7;border:1px solid #bae6fd">🔔 ${fmtD(fu.nextFollowupDate)}</span>`;
+      if(fu.outcome==="won") tags+=`<span class="badge won">✅ Gagné</span>`;
+      if(fu.outcome==="lost") tags+=`<span class="badge lost">❌ ${fu.lostReason||"Perdu"}</span>`;
+      html+=`<div class="fu-card" style="border-left-color:${bc}">
+        <div class="fu-head">
+          <div style="display:flex;gap:7px;align-items:center;font-weight:600;font-size:12px">${ct[1]} ${ct[2]} <span class="tc-info">par ${fu.author}</span></div>
+          <span style="font-size:10px;color:#9ca3af">${fmtDT(fu.date)}</span>
+        </div>
+        ${tempArrow}
+        ${fu.comment?`<div style="font-size:12px;color:#374151;line-height:1.55;margin-bottom:9px;background:#f9fafb;border-radius:6px;padding:8px 10px">${fu.comment}</div>`:""}
+        <div class="fu-tags">${tags}</div>
+      </div>`;
+    });
+  }
+  html+=`</div></div>`;
+  return html;
+}
+
+// ─── STATISTIQUES ─────────────────────────────────────────────
+function statsHTML(){
+  // Filtre des dossiers selon statsFilt
+  const inPeriod=l=>{
+    if(statsFilt.sp!=="Tous"&&l.salesperson!==statsFilt.sp)return false;
+    if(statsFilt.store!=="Tous"&&l.store!==statsFilt.store)return false;
+    if(!boss()&&l.salesperson!==user)return false;
+    const d=l.createdAt?l.createdAt.slice(0,7):"";
+    if(statsFilt.from&&d<statsFilt.from)return false;
+    if(statsFilt.to&&d>statsFilt.to)return false;
+    return true;
+  };
+  const sLeads=leads.filter(inPeriod);
+  const won=sLeads.filter(l=>l.status==="won"), lost=sLeads.filter(l=>l.status==="lost"), active=sLeads.filter(l=>l.status==="active");
+  const caWon=won.reduce((s,l)=>s+l.amount,0);
+  const caMargeWon=won.reduce((s,l)=>s+(l.marge||0),0);
+  const txMarge=caWon>0&&caMargeWon>0?Math.round(caMargeWon/caWon*100):null;
+  const conv=won.length+lost.length===0?null:Math.round(won.length/(won.length+lost.length)*100);
+  const bigD=active.length?active.reduce((m,l)=>l.amount>m.amount?l:m,active[0]):null;
+  const isPeriod=statsFilt.from||statsFilt.to||statsFilt.sp!=="Tous"||statsFilt.store!=="Tous";
+
+  let html="";
+
+  // ── BARRE DE FILTRES ──
+  html+=`<div class="card" style="margin-bottom:14px;padding:14px 18px">
+    <div style="font-weight:600;font-size:13px;margin-bottom:4px">🔎 Filtrer les statistiques</div>
+    <div style="font-size:11px;color:#9ca3af;margin-bottom:12px">⚠ Les filtres de période sont basés sur la <b>date de création du dossier</b> (date à laquelle le client a été ajouté).</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+      <div>
+        <label class="lbl">Dossiers créés à partir du</label>
+        <input type="month" value="${statsFilt.from}" onchange="statsFilt.from=this.value;render()" style="width:160px">
+      </div>
+      <div>
+        <label class="lbl">Jusqu'au mois de</label>
+        <input type="month" value="${statsFilt.to}" onchange="statsFilt.to=this.value;render()" style="width:160px">
+      </div>
+      ${boss()?`<div>
+        <label class="lbl">Vendeur</label>
+        <select onchange="statsFilt.sp=this.value;render()" style="width:140px">
+          <option value="Tous"${statsFilt.sp==="Tous"?" selected":""}>Tous les vendeurs</option>
+          ${SPS.map(s=>`<option value="${s}"${statsFilt.sp===s?" selected":""}>${s}</option>`).join("")}
+        </select>
+      </div>
+      <div>
+        <label class="lbl">Magasin</label>
+        <select onchange="statsFilt.store=this.value;render()" style="width:150px">
+          <option value="Tous"${statsFilt.store==="Tous"?" selected":""}>Tous les magasins</option>
+          ${STORES.map(s=>`<option value="${s}"${statsFilt.store===s?" selected":""}>${s}</option>`).join("")}
+        </select>
+      </div>`:""}
+      ${isPeriod?`<button onclick="statsFilt={sp:'Tous',store:'Tous',from:'',to:''};render()" style="background:#f3f4f6;border:1px solid #d1d5db;border-radius:7px;padding:7px 12px;font-size:12px;cursor:pointer;color:#374151;align-self:flex-end">✕ Réinitialiser</button>`:""}
+    </div>
+    ${isPeriod?`<div style="margin-top:10px;padding:6px 10px;background:#eef2ff;border-radius:6px;font-size:11px;color:#4f46e5;font-weight:500">
+      📊 Dossiers créés${statsFilt.from?" à partir de "+fmtM(statsFilt.from):""}${statsFilt.to?" jusqu'à "+fmtM(statsFilt.to):""}${statsFilt.sp!=="Tous"?" · "+statsFilt.sp:""}${statsFilt.store!=="Tous"?" · "+statsFilt.store:""} — ${sLeads.length} dossier${sLeads.length!==1?"s":""}
+    </div>`:""}
+  </div>`;
+
+  // ── KPIs ──
+  const caActive=active.reduce((s,l)=>s+l.amount,0);
+  html+=`<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:14px">`;
+  [["💼 Portefeuille en cours",fmtE(caActive),"#4f46e5",active.length+" devis actifs"],
+   ["✅ CA gagné",fmtE(caWon),"#16a34a",won.length+" signé"+(won.length!==1?"s":"")],
+   ["📊 Taux conversion",conv!==null?conv+"%":"—","#0891b2",won.length+"/"+(won.length+lost.length)+" closés"],
+   ["❌ Perdus",lost.length,"#dc2626",fmtE(lost.reduce((s,l)=>s+l.amount,0))+" perdus"],
+   ["💹 Marge",caMargeWon?fmtE(caMargeWon):"—","#059669",txMarge!==null?txMarge+"% du CA":"Non renseignée"]
+  ].forEach(([l,v,c,s])=>{
+    html+=`<div class="kpi" style="border-left:4px solid ${c}"><div class="lbl">${l}</div><div class="val" style="color:${c}">${v}</div><div class="sub">${s}</div></div>`;
+  });
+  html+=`</div>`;
+
+  // ── COMPARAISON MOIS PAR MOIS ──
+  const allMonths={};
+  sLeads.forEach(l=>{
+    const m=l.createdAt?l.createdAt.slice(0,7):"?";
+    if(!allMonths[m])allMonths[m]={won:[],lost:[],active:[],total:[]};
+    allMonths[m][l.status].push(l);
+    allMonths[m].total.push(l);
+  });
+  const monthKeys=Object.keys(allMonths).sort();
+  if(monthKeys.length>1||isPeriod){
+    html+=`<div class="card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div><div class="card-title">📆 Évolution mois par mois</div><div style="font-size:11px;color:#9ca3af">Basé sur la <b>date de création</b> des dossiers — CA gagné, perdus, conversion</div></div>
+    </div>
+    <div style="overflow-x:auto"><table><thead><tr>
+      <th>Mois de création</th><th style="text-align:right">Dossiers créés</th><th style="text-align:right">CA créé</th><th style="text-align:right">Gagnés</th><th style="text-align:right">CA gagné</th><th style="text-align:right">Perdus</th><th style="text-align:right">Tx conv.</th><th style="text-align:right">Panier moy.</th>
+    </tr></thead><tbody>`;
+    let prevConv=null;
+    monthKeys.forEach(m=>{
+      const md=allMonths[m];
+      const cl=md.won.length+md.lost.length;
+      const txC=cl?Math.round(md.won.length/cl*100):null;
+      const caC=md.won.reduce((s,l)=>s+l.amount,0);
+      const caTot=md.total.reduce((s,l)=>s+l.amount,0);
+      const pm=md.total.length?Math.round(caTot/md.total.length):0;
+      const trend=txC!==null&&prevConv!==null?(txC>prevConv?"▲":"▼"):"";
+      const tCol=trend==="▲"?"#16a34a":trend==="▼"?"#dc2626":"";
+      const cc=v=>v>=60?"#16a34a":v>=30?"#d97706":"#dc2626";
+      html+=`<tr class="tr-click" style="cursor:default">
+        <td style="font-weight:600">${fmtM(m)}</td>
+        <td style="text-align:right;color:#4f46e5;font-weight:600">${md.total.length}</td>
+        <td style="text-align:right">${fmtE(caTot)}</td>
+        <td style="text-align:right;color:#16a34a;font-weight:600">${md.won.length}</td>
+        <td style="text-align:right;color:#16a34a;font-weight:700">${caC?fmtE(caC):"—"}</td>
+        <td style="text-align:right;color:#dc2626">${md.lost.length}</td>
+        <td style="text-align:right">${txC!==null?`<span style="font-weight:700;color:${cc(txC)}">${txC}% <span style="color:${tCol};font-size:10px">${trend}</span></span>`:"—"}</td>
+        <td style="text-align:right;color:#6b7280">${pm?fmtE(pm):"—"}</td>
+      </tr>`;
+      if(txC!==null)prevConv=txC;
+    });
+    html+=`</tbody></table></div></div>`;
+  }
+
+  // ── CLASSEMENT VENDEURS ──
+  const vSpsFiltered=boss()?SPS.filter(sp=>statsFilt.sp==="Tous"||sp===statsFilt.sp):[user];
+  const rankRows=vSpsFiltered.map(sp=>{
+    const ml=sLeads.filter(l=>l.salesperson===sp);
+    const wn=ml.filter(l=>l.status==="won"),ls=ml.filter(l=>l.status==="lost"),ac=ml.filter(l=>l.status==="active");
+    const cl=wn.length+ls.length;
+    const caW=wn.reduce((s,l)=>s+l.amount,0);
+    const caAc=ac.reduce((s,l)=>s+l.amount,0);
+    const txC=cl?Math.round(wn.length/cl*100):null;
+    return {sp,nb:ml.length,caW,caAc,txC,wnN:wn.length,lsN:ls.length,od:ac.filter(l=>isOD(l.nextFollowupDate)).length};
+  }).sort((a,b)=>b.caW-a.caW);
+
+  const medals=["🥇","🥈","🥉"];
+  const podiumColors=["#f59e0b","#94a3b8","#b45309"];
+  const maxCaW=rankRows[0]?.caW||1;
+
+  html+=`<div class="card"><div class="card-title">🏆 Classement des vendeurs</div><div class="card-sub">Du meilleur au moins bon — basé sur le CA gagné</div>`;
+
+  if(rankRows.every(r=>r.caW===0)){
+    html+=`<div class="empty" style="padding:20px">Aucun CA gagné sur cette période. Le classement s'affichera dès les premières signatures.</div>`;
+  } else {
+    rankRows.forEach((r,i)=>{
+      const pct=maxCaW?Math.round(r.caW/maxCaW*100):0;
+      const isFirst=i===0;
+      const bgColor=isFirst?"#fffbeb":"#fafafa";
+      const borderColor=isFirst?"#fde68a":"#e8eaed";
+      const cc2=r.txC>=60?"#16a34a":r.txC>=30?"#d97706":"#dc2626";
+      html+=`<div style="display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:10px;margin-bottom:8px;background:${bgColor};border:1px solid ${borderColor}">
+        <div style="font-size:${isFirst?"28":"22"}px;min-width:34px;text-align:center">${medals[i]||`${i+1}.`}</div>
+        <div style="flex:1">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <div>
+              <span style="font-weight:700;font-size:14px;color:#111827">${r.sp}</span>
+              ${r.od>0?`<span class="badge" style="background:#fef2f2;color:#dc2626;border:1px solid #fca5a5;margin-left:6px;font-size:10px">⚠ ${r.od} retard${r.od>1?"s":""}</span>`:""}
+            </div>
+            <div style="text-align:right">
+              <div style="font-weight:800;font-size:16px;color:#16a34a">${fmtE(r.caW)}</div>
+              <div style="font-size:11px;color:#9ca3af">${r.wnN} signé${r.wnN>1?"s":""} · ${r.lsN} perdu${r.lsN>1?"s":""}</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="flex:1;height:8px;background:#e8eaed;border-radius:4px;overflow:hidden">
+              <div style="height:8px;border-radius:4px;background:${isFirst?"#f59e0b":"#4f46e5"};width:${pct}%;transition:width .3s"></div>
+            </div>
+            <div style="display:flex;gap:10px;font-size:11px;min-width:180px;justify-content:flex-end">
+              <span style="color:#6b7280">Portefeuille: <b style="color:#4f46e5">${fmtE(r.caAc)}</b></span>
+              ${r.txC!==null?`<span style="color:#6b7280">Conv: <b style="color:${cc2}">${r.txC}%</b></span>`:""}
+              <span style="color:#6b7280">${r.nb} dossier${r.nb>1?"s":""}</span>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    });
+  }
+  html+=`</div>`;
+
+  // ── COMPARATIF VENDEURS ──
+  html+=`<div class="card"><div class="card-title">🏅 Comparatif vendeurs — détail complet</div>`;
+  html+=`<div style="overflow-x:auto"><table><thead>
+    <tr style="background:#f8fafc">
+      <th style="border-bottom:2px solid #e8eaed"></th>
+      <th colspan="3" style="text-align:center;color:#4f46e5;border-bottom:2px solid #c7d2fe;background:#eef2ff">📋 DEVIS</th>
+      <th colspan="3" style="text-align:center;color:#16a34a;border-bottom:2px solid #bbf7d0;background:#f0fdf4">✅ GAGNÉS</th>
+      <th colspan="3" style="text-align:center;color:#dc2626;border-bottom:2px solid #fca5a5;background:#fef2f2">❌ PERDUS</th>
+      <th colspan="2" style="text-align:center;color:#d97706;border-bottom:2px solid #fde68a;background:#fffbeb">📊 RATIOS</th>
+    </tr>
+    <tr style="background:#fafafa"><th>Vendeur</th><th style="text-align:right">Nb</th><th style="text-align:right">CA total</th><th style="text-align:right">Ticket moy.</th><th style="text-align:right">Nb</th><th style="text-align:right">CA gagné</th><th style="text-align:right">Tx conv.</th><th style="text-align:right">Nb</th><th style="text-align:right">CA perdu</th><th style="text-align:right">Tx perte</th><th style="text-align:right">Efficacité</th><th style="text-align:right">Retards</th></tr>
+  </thead><tbody>`;
+  const rows=vSpsFiltered.map(sp=>{
+    const ml=sLeads.filter(l=>l.salesperson===sp);
+    const wn=ml.filter(l=>l.status==="won"),ls=ml.filter(l=>l.status==="lost"),ac=ml.filter(l=>l.status==="active");
+    const cl=wn.length+ls.length;
+    const caT=ml.reduce((s,l)=>s+l.amount,0),caW=wn.reduce((s,l)=>s+l.amount,0),caL=ls.reduce((s,l)=>s+l.amount,0),caC=caW+caL;
+    return {sp,nb:ml.length,caT,avgT:ml.length?Math.round(caT/ml.length):0,wnN:wn.length,caW,txC:cl?Math.round(wn.length/cl*100):null,lsN:ls.length,caL,txP:cl?Math.round(ls.length/cl*100):null,eff:caC?Math.round(caW/caC*100):null,od:ac.filter(l=>isOD(l.nextFollowupDate)).length};
+  }).sort((a,b)=>b.caW-a.caW);
+  const cc=v=>v>=60?"#16a34a":v>=30?"#d97706":"#dc2626";
+  let tNb=0,tCa=0,tW=0,tCW=0,tL=0,tCL=0;
+  rows.forEach((r,i)=>{
+    tNb+=r.nb;tCa+=r.caT;tW+=r.wnN;tCW+=r.caW;tL+=r.lsN;tCL+=r.caL;
+    const medal=i===0?"🥇 ":i===1?"🥈 ":i===2?"🥉 ":"";
+    const txBar=r.txC!==null?`<div style="display:flex;align-items:center;gap:5px;justify-content:flex-end"><div style="width:36px;height:6px;background:#f3f4f6;border-radius:3px"><div style="height:6px;border-radius:3px;background:${cc(r.txC)};width:${r.txC}%"></div></div><span style="font-weight:700;color:${cc(r.txC)}">${r.txC}%</span></div>`:"—";
+    const effBar=r.eff!==null?`<div style="display:flex;align-items:center;gap:5px;justify-content:flex-end"><div style="width:36px;height:6px;background:#f3f4f6;border-radius:3px"><div style="height:6px;border-radius:3px;background:${cc(r.eff)};width:${r.eff}%"></div></div><span style="font-weight:700;color:${cc(r.eff)}">${r.eff}%</span></div>`:"—";
+    const od=r.od>0?`<span class="badge" style="background:#fef2f2;color:#dc2626;border:1px solid #fca5a5">⚠ ${r.od}</span>`:`<span style="color:#16a34a">✓</span>`;
+    html+=`<tr class="tr-click" style="cursor:default"><td style="font-weight:600">${medal}${r.sp}</td><td style="text-align:right;color:#4f46e5;font-weight:600">${r.nb}</td><td style="text-align:right">${fmtE(r.caT)}</td><td style="text-align:right;color:#6b7280">${r.avgT?fmtE(r.avgT):"—"}</td><td style="text-align:right;color:#16a34a;font-weight:600">${r.wnN}</td><td style="text-align:right;color:#16a34a;font-weight:700">${fmtE(r.caW)}</td><td style="text-align:right">${txBar}</td><td style="text-align:right;color:#dc2626">${r.lsN}</td><td style="text-align:right;color:#dc2626">${r.caL?fmtE(r.caL):"—"}</td><td style="text-align:right">${r.txP!==null?`<span style="color:#dc2626;font-weight:600">${r.txP}%</span>`:"—"}</td><td style="text-align:right">${effBar}</td><td style="text-align:right">${od}</td></tr>`;
+  });
+  const tCl=tW+tL;
+  html+=`<tr style="border-top:2px solid #e8eaed;background:#f8fafc;font-weight:700;cursor:default"><td>TOTAL ÉQUIPE</td><td style="text-align:right;color:#4f46e5">${tNb}</td><td style="text-align:right">${fmtE(tCa)}</td><td style="text-align:right;color:#6b7280">${tNb?fmtE(Math.round(tCa/tNb)):""}</td><td style="text-align:right;color:#16a34a">${tW}</td><td style="text-align:right;color:#16a34a">${fmtE(tCW)}</td><td style="text-align:right">${tCl?Math.round(tW/tCl*100)+"%":"—"}</td><td style="text-align:right;color:#dc2626">${tL}</td><td style="text-align:right;color:#dc2626">${fmtE(tCL)}</td><td style="text-align:right;color:#dc2626">${tCl?Math.round(tL/tCl*100)+"%":"—"}</td><td style="text-align:right;color:#d97706">${(tCW+tCL)?Math.round(tCW/(tCW+tCL)*100)+"%":"—"}</td><td></td></tr>`;
+  html+=`</tbody></table></div>
+  <div style="display:flex;gap:16px;margin-top:12px;font-size:11px;color:#6b7280;flex-wrap:wrap">
+    <span>✅ <b>Tx conv.</b> = gagnés/(gagnés+perdus)</span>
+    <span>📊 <b>Efficacité</b> = CA gagné/CA total closé</span>
+  </div></div>`;
+
+  // ── PANIER MOYEN ──
+  html+=`<div class="card"><div class="card-title">🛒 Panier moyen par vendeur</div><div class="card-sub">Montant moyen par température sur la période sélectionnée</div><table><thead><tr><th>Vendeur</th><th style="text-align:right">Panier moyen</th><th style="text-align:right">🔥 Chaud</th><th style="text-align:right">🌡️ Tiède</th><th style="text-align:right">❄️ Froid</th><th style="text-align:right">✅ Gagné</th><th style="text-align:right">Plus gros actif</th></tr></thead><tbody>`;
+  const pmRows=vSpsFiltered.map(sp=>{
+    const ml=sLeads.filter(l=>l.salesperson===sp),ac=ml.filter(l=>l.status==="active"),wn=ml.filter(l=>l.status==="won");
+    const hot=ac.filter(l=>l.temperature==="hot"),warm=ac.filter(l=>l.temperature==="warm"),cold=ac.filter(l=>l.temperature==="cold");
+    const big=ac.length?ac.reduce((m,l)=>l.amount>m.amount?l:m,ac[0]):null;
+    return {sp,avgAll:avgAmt(ml),nb:ml.length,hot,warm,cold,wn,big};
+  }).sort((a,b)=>(b.avgAll||0)-(a.avgAll||0));
+  const mkC=(arr,c)=>avgAmt(arr)?`<div style="text-align:right"><div style="font-weight:600;color:${c}">${fmtE(avgAmt(arr))}</div><div style="font-size:10px;color:#9ca3af">${arr.length} dossier${arr.length!==1?"s":""}</div></div>`:`<div style="color:#d1d5db;text-align:right">—</div>`;
+  pmRows.forEach(r=>{
+    html+=`<tr class="tr-click" style="cursor:default"><td style="font-weight:600">${r.sp}</td>
+      <td><div style="text-align:right"><div style="font-weight:700;font-size:14px;color:#4f46e5">${r.avgAll?fmtE(r.avgAll):"—"}</div><div style="font-size:10px;color:#9ca3af">${r.nb} dossier${r.nb!==1?"s":""}</div></div></td>
+      <td>${mkC(r.hot,"#cf1322")}</td><td>${mkC(r.warm,"#ad6800")}</td><td>${mkC(r.cold,"#0958d9")}</td><td>${mkC(r.wn,"#16a34a")}</td>
+      <td>${r.big?`<div style="text-align:right"><div style="font-weight:700;color:#d97706">${fmtE(r.big.amount)}</div><div style="font-size:10px;color:#9ca3af">${r.big.clientName}</div></div>`:"—"}</td>
+    </tr>`;
+  });
+  html+=`<tr style="border-top:2px solid #e8eaed;background:#f8fafc;font-weight:700;cursor:default"><td>MOYENNE ÉQUIPE</td><td style="text-align:right;color:#4f46e5;font-size:14px">${avgAmt(sLeads)?fmtE(avgAmt(sLeads)):"—"}</td><td colspan="5"></td></tr>`;
+  html+=`</tbody></table></div>`;
+
+  // ── COMPARATIF PAR ENSEIGNE ──
+  const storesFiltered=statsFilt.store!=="Tous"?[statsFilt.store]:STORES;
+  html+=`<div class="card"><div class="card-title">🏪 Comparatif par enseigne</div><div class="card-sub">Performance de chaque magasin sur la période sélectionnée</div>`;
+
+  const storeData=storesFiltered.map(store=>{
+    const ml=sLeads.filter(l=>l.store===store);
+    if(!ml.length)return null;
+    const wn=ml.filter(l=>l.status==="won"),ls=ml.filter(l=>l.status==="lost"),ac=ml.filter(l=>l.status==="active");
+    const cl=wn.length+ls.length;
+    const caAc=ac.reduce((s,l)=>s+l.amount,0);
+    const caW=wn.reduce((s,l)=>s+l.amount,0);
+    const caL=ls.reduce((s,l)=>s+l.amount,0);
+    const caT=ml.reduce((s,l)=>s+l.amount,0);
+    const txC=cl?Math.round(wn.length/cl*100):null;
+    const eff=(caW+caL)?Math.round(caW/(caW+caL)*100):null;
+    const hot=ac.filter(l=>l.temperature==="hot").length;
+    const warm=ac.filter(l=>l.temperature==="warm").length;
+    const cold=ac.filter(l=>l.temperature==="cold").length;
+    const vendeurs=[...new Set(ml.map(l=>l.salesperson))];
+    const od=ac.filter(l=>isOD(l.nextFollowupDate)).length;
+    return {store,nb:ml.length,caAc,caW,caL,caT,txC,eff,hot,warm,cold,wn:wn.length,ls:ls.length,ac:ac.length,vendeurs,od,avgT:ml.length?Math.round(caT/ml.length):0};
+  }).filter(Boolean).sort((a,b)=>b.caW-a.caW);
+
+  if(!storeData.length){
+    html+=`<div class="empty">Aucune donnée pour cette période.</div>`;
+  } else {
+    // Cartes visuelles par enseigne
+    const maxStore=storeData[0]?.caW||1;
+    const storeColors=["#4f46e5","#0891b2","#16a34a","#d97706","#dc2626"];
+    html+=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:20px">`;
+    storeData.forEach((s,i)=>{
+      const pct=maxStore?Math.round(s.caW/maxStore*100):0;
+      const col=storeColors[i%storeColors.length];
+      const cc2=s.txC!==null?(s.txC>=60?"#16a34a":s.txC>=30?"#d97706":"#dc2626"):"#9ca3af";
+      const tot=s.hot+s.warm+s.cold||1;
+      html+=`<div style="background:#fff;border:1px solid #e8eaed;border-top:4px solid ${col};border-radius:10px;padding:16px">
+        <div style="font-weight:700;font-size:14px;color:#111827;margin-bottom:2px">${s.store}</div>
+        <div style="font-size:11px;color:#9ca3af;margin-bottom:14px">${s.vendeurs.join(", ")}</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+          <div style="background:#f0fdf4;border-radius:8px;padding:10px;text-align:center">
+            <div style="font-size:10px;color:#6b7280;margin-bottom:3px">CA gagné</div>
+            <div style="font-weight:800;font-size:15px;color:#16a34a">${fmtE(s.caW)}</div>
+            <div style="font-size:10px;color:#9ca3af">${s.wn} signé${s.wn>1?"s":""}</div>
+          </div>
+          <div style="background:#f9fafb;border-radius:8px;padding:10px;text-align:center">
+            <div style="font-size:10px;color:#6b7280;margin-bottom:3px">Portefeuille en cours</div>
+            <div style="font-weight:800;font-size:15px;color:#4f46e5">${fmtE(s.caAc)}</div>
+            <div style="font-size:10px;color:#9ca3af">${s.ac} dossier${s.ac>1?"s":""}</div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:8px">
+          <span>Tx conv. <b style="color:${cc2}">${s.txC!==null?s.txC+"%":"—"}</b></span>
+          <span>Efficacité <b style="color:${cc2}">${s.eff!==null?s.eff+"%":"—"}</b></span>
+          <span>Perdus <b style="color:#dc2626">${s.ls}</b></span>
+          ${s.od>0?`<span style="color:#dc2626;font-weight:600">⚠ ${s.od}</span>`:"<span style='color:#16a34a'>✓</span>"}
+        </div>
+        <div style="margin-bottom:6px">
+          <div style="font-size:10px;color:#9ca3af;margin-bottom:4px">Qualité du tuyau</div>
+          <div style="display:flex;height:8px;border-radius:4px;overflow:hidden;gap:1px">
+            <div style="flex:${s.hot/tot};background:#cf1322;min-width:${s.hot?3:0}px"></div>
+            <div style="flex:${s.warm/tot};background:#d97706;min-width:${s.warm?3:0}px"></div>
+            <div style="flex:${s.cold/tot};background:#0958d9;min-width:${s.cold?3:0}px"></div>
+            ${!s.ac?`<div style="flex:1;background:#f3f4f6"></div>`:""}
+          </div>
+          <div style="display:flex;gap:8px;font-size:10px;color:#9ca3af;margin-top:3px">
+            ${s.hot>0?`<span style="color:#cf1322">🔥${s.hot}</span>`:""}
+            ${s.warm>0?`<span style="color:#ad6800">🌡️${s.warm}</span>`:""}
+            ${s.cold>0?`<span style="color:#0958d9">❄️${s.cold}</span>`:""}
+            ${!s.ac?`<span>Aucun actif</span>`:""}
+          </div>
+        </div>
+        <div style="border-top:1px solid #f3f4f6;padding-top:8px;margin-top:4px">
+          <div style="display:flex;align-items:center;gap:6px">
+            <div style="flex:1;height:6px;background:#f3f4f6;border-radius:3px">
+              <div style="height:6px;border-radius:3px;background:${col};width:${pct}%"></div>
+            </div>
+            <span style="font-size:10px;color:#9ca3af;white-space:nowrap">Ticket moy. ${fmtE(s.avgT)}</span>
+          </div>
+        </div>
+      </div>`;
+    });
+    html+=`</div>`;
+
+    // Tableau récap enseignes
+    html+=`<div style="overflow-x:auto"><table><thead>
+      <tr style="background:#fafafa"><th>Enseigne</th><th style="text-align:right">Dossiers</th><th style="text-align:right">🔥 Chaud</th><th style="text-align:right">🌡️ Tiède</th><th style="text-align:right">❄️ Froid</th><th style="text-align:right">CA gagné</th><th style="text-align:right">CA perdu</th><th style="text-align:right">Tx conv.</th><th style="text-align:right">Ticket moy.</th></tr>
+    </thead><tbody>`;
+    storeData.forEach(s=>{
+      const cc3=s.txC!==null?(s.txC>=60?"#16a34a":s.txC>=30?"#d97706":"#dc2626"):"#9ca3af";
+      html+=`<tr style="cursor:default" class="tr-click">
+        <td style="font-weight:600">${s.store}</td>
+        <td style="text-align:right;color:#4f46e5;font-weight:600">${s.nb}</td>
+        <td style="text-align:right;color:#cf1322">${s.hot}</td>
+        <td style="text-align:right;color:#ad6800">${s.warm}</td>
+        <td style="text-align:right;color:#0958d9">${s.cold}</td>
+        <td style="text-align:right;color:#16a34a;font-weight:700">${fmtE(s.caW)}</td>
+        <td style="text-align:right;color:#dc2626">${s.caL?fmtE(s.caL):"—"}</td>
+        <td style="text-align:right"><span style="font-weight:700;color:${cc3}">${s.txC!==null?s.txC+"%":"—"}</span></td>
+        <td style="text-align:right;color:#6b7280">${fmtE(s.avgT)}</td>
+      </tr>`;
+    });
+    // Total
+    const totS={nb:storeData.reduce((s,r)=>s+r.nb,0),caW:storeData.reduce((s,r)=>s+r.caW,0),caL:storeData.reduce((s,r)=>s+r.caL,0),hot:storeData.reduce((s,r)=>s+r.hot,0),warm:storeData.reduce((s,r)=>s+r.warm,0),cold:storeData.reduce((s,r)=>s+r.cold,0),wn:storeData.reduce((s,r)=>s+r.wn,0),ls:storeData.reduce((s,r)=>s+r.ls,0)};
+    const totCl=totS.wn+totS.ls;
+    html+=`<tr style="border-top:2px solid #e8eaed;background:#f8fafc;font-weight:700;cursor:default">
+      <td>TOTAL</td>
+      <td style="text-align:right;color:#4f46e5">${totS.nb}</td>
+      <td style="text-align:right;color:#cf1322">${totS.hot}</td>
+      <td style="text-align:right;color:#ad6800">${totS.warm}</td>
+      <td style="text-align:right;color:#0958d9">${totS.cold}</td>
+      <td style="text-align:right;color:#16a34a">${fmtE(totS.caW)}</td>
+      <td style="text-align:right;color:#dc2626">${fmtE(totS.caL)}</td>
+      <td style="text-align:right">${totCl?Math.round(totS.wn/totCl*100)+"%":"—"}</td>
+      <td style="text-align:right;color:#6b7280">${totS.nb?fmtE(Math.round((totS.caW+totS.caL)/totS.nb)):"—"}</td>
+    </tr>`;
+    html+=`</tbody></table></div>`;
+  }
+  html+=`</div>`;
+  const sFups=fups.filter(f=>{
+    const l=leads.find(x=>x.id===f.leadId);
+    return l&&inPeriod(l);
+  });
+  const byAuth={};sFups.forEach(f=>{byAuth[f.author]=(byAuth[f.author]||0)+1;});
+  const authList=Object.entries(byAuth).sort((a,b)=>b[1]-a[1]);
+  const maxF=authList[0]?.[1]||1;
+  const byType={};sFups.forEach(f=>{byType[f.type]=(byType[f.type]||0)+1;});
+  html+=`<div class="grid2">`;
+  html+=`<div class="card"><div class="card-title">📞 Relances effectuées par personne</div>`;
+  if(!authList.length){html+=`<div class="empty">Aucune relance sur cette période</div>`;}
+  else authList.forEach(([a,c])=>{
+    html+=`<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span style="font-weight:500">${a}</span><span style="color:#6b7280">${c} relance${c!==1?"s":""}</span></div><div class="bar-wrap"><div class="bar" style="background:#4f46e5;width:${Math.round(c/maxF*100)}%"></div></div></div>`;
+  });
+  html+=`</div>`;
+  html+=`<div class="card"><div class="card-title">🗂 Modes de contact</div>`;
+  if(!sFups.length){html+=`<div class="empty">Aucune relance sur cette période</div>`;}
+  else CTYPES.forEach(([k,ic,lb])=>{
+    const c=byType[k]||0,p=Math.round(c/(sFups.length||1)*100);
+    html+=`<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span>${ic} ${lb}</span><span style="color:#6b7280">${c} (${p}%)</span></div><div class="bar-wrap"><div class="bar" style="background:#6366f1;width:${p}%"></div></div></div>`;
+  });
+  html+=`</div></div>`;
+
+
+  // RAISONS PERTE
+  const lostL=leads.filter(l=>l.status==="lost"&&(boss()||l.salesperson===user));
+  if(lostL.length){
+    // Grouper par raison avec CA et dossiers
+    const byR={};
+    lostL.forEach(l=>{
+      const r=l.lostReason||"Non renseigné";
+      if(!byR[r])byR[r]={count:0,ca:0,leads:[]};
+      byR[r].count++;byR[r].ca+=l.amount;byR[r].leads.push(l);
+    });
+    const sorted=Object.entries(byR).sort((a,b)=>b[1].count-a[1].count);
+    const maxR=sorted[0][1].count;
+    const totalCA=lostL.reduce((s,l)=>s+l.amount,0);
+
+    html+=`<div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+        <div class="card-title">❌ Pourquoi on perd des devis</div>
+        <button onclick="toggleLossDetail()" id="loss_detail_btn" style="background:#f3f4f6;border:1px solid #d1d5db;border-radius:20px;padding:4px 12px;font-size:11px;cursor:pointer;color:#374151;font-weight:500">+ Voir CA & panier moyen</button>
+      </div>
+      <div class="card-sub">${lostL.length} dossier${lostL.length>1?"s":""} perdus — ${fmtE(totalCA)} de CA perdu au total</div>`;
+
+    sorted.forEach(([r,d])=>{
+      const p=Math.round(d.count/lostL.length*100);
+      const pCA=Math.round(d.ca/totalCA*100);
+      const pm=d.ca/d.count;
+      html+=`<div style="margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;font-size:12px;margin-bottom:5px">
+          <span style="font-weight:600;color:#374151">${r}</span>
+          <div style="text-align:right">
+            <span style="color:#dc2626;font-weight:700">${d.count} dossier${d.count>1?"s":""}</span>
+            <span style="color:#9ca3af;margin-left:6px">${p}% des pertes</span>
+          </div>
+        </div>
+        <div class="bar-wrap"><div class="bar" style="background:#dc2626;width:${Math.round(d.count/maxR*100)}%"></div></div>
+        <div id="loss_detail_${r.replace(/[^a-z0-9]/gi,'_')}" style="display:none;margin-top:10px;padding:10px 12px;background:#fef2f2;border-radius:8px;border:1px solid #fecaca">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+            <div style="text-align:center">
+              <div style="font-size:10px;color:#9ca3af;margin-bottom:3px">Nb dossiers</div>
+              <div style="font-weight:700;color:#dc2626;font-size:15px">${d.count}</div>
+            </div>
+            <div style="text-align:center;border-left:1px solid #fecaca;border-right:1px solid #fecaca">
+              <div style="font-size:10px;color:#9ca3af;margin-bottom:3px">CA perdu</div>
+              <div style="font-weight:700;color:#dc2626;font-size:15px">${fmtE(d.ca)}</div>
+              <div style="font-size:10px;color:#9ca3af">${pCA}% du CA perdu total</div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-size:10px;color:#9ca3af;margin-bottom:3px">Panier moyen</div>
+              <div style="font-weight:700;color:#dc2626;font-size:15px">${fmtE(Math.round(pm))}</div>
+            </div>
+          </div>
+          <div style="margin-top:8px;border-top:1px solid #fecaca;padding-top:8px">
+            <div style="font-size:10px;color:#9ca3af;margin-bottom:5px;font-weight:500">DOSSIERS CONCERNÉS</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px">
+              ${d.leads.map(l=>`<span style="font-size:11px;background:#fff;border:1px solid #fecaca;border-radius:10px;padding:2px 8px;cursor:pointer;color:#374151" onclick="go('lead','${l.id}')">${l.clientName} (${l.salesperson}) — ${fmtE(l.amount)}</span>`).join("")}
+            </div>
+          </div>
+        </div>
+      </div>`;
+    });
+    html+=`</div>`;
+  }
+
+  // QUALITÉ TUYAU
+  html+=`<div class="card"><div class="card-title">🌡️ Qualité du tuyau par vendeur</div>`;
+  vSps().forEach(sp=>{
+    const ac=aL().filter(l=>l.salesperson===sp);
+    const hot=ac.filter(l=>l.temperature==="hot").length,warm=ac.filter(l=>l.temperature==="warm").length,cold=ac.filter(l=>l.temperature==="cold").length,tot=hot+warm+cold||1;
+    html+=`<div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px"><span style="font-weight:500">${sp}</span><span style="font-size:11px;color:#9ca3af">${ac.length} dossiers actifs</span></div>
+      <div style="display:flex;height:12px;border-radius:6px;overflow:hidden;gap:1px">
+        <div style="flex:${hot/tot};background:#cf1322;min-width:${hot?4:0}px"></div>
+        <div style="flex:${warm/tot};background:#d97706;min-width:${warm?4:0}px"></div>
+        <div style="flex:${cold/tot};background:#0958d9;min-width:${cold?4:0}px"></div>
+        ${!ac.length?`<div style="flex:1;background:#f3f4f6"></div>`:""}
+      </div>
+      <div style="display:flex;gap:12px;font-size:11px;color:#9ca3af;margin-top:4px">
+        ${hot>0?`<span style="color:#cf1322">🔥 ${hot} (${Math.round(hot/tot*100)}%)</span>`:""}
+        ${warm>0?`<span style="color:#ad6800">🌡️ ${warm} (${Math.round(warm/tot*100)}%)</span>`:""}
+        ${cold>0?`<span style="color:#0958d9">❄️ ${cold} (${Math.round(cold/tot*100)}%)</span>`:""}
+        ${!ac.length?`<span>Aucun dossier actif</span>`:""}
+      </div></div>`;
+  });
+  html+=`</div>`;
+
+  // ── STATS PAR TYPE DE PRODUIT ──
+  const ptypesUsed=[...new Set(sLeads.map(l=>l.ptype||"Non renseigné"))].sort();
+  if(sLeads.some(l=>l.ptype)){
+    html+=`<div class="card"><div class="card-title">🏷️ Statistiques par type de produit</div><div class="card-sub">Répartition des devis, CA et signatures selon le type de vente</div>`;
+
+    // Onglets par type
+    const ptColors={"VENTE NEUF":"#4f46e5","VENTE RENO":"#0891b2","KIT PREMIUM":"#d97706","VENTE PISCINE":"#16a34a","VENTE SPA":"#9333ea","AUTRE":"#6b7280","Non renseigné":"#d1d5db"};
+
+    // Tableau global par type
+    html+=`<div style="overflow-x:auto;margin-bottom:20px"><table><thead><tr>
+      <th>Type de produit</th>
+      <th style="text-align:right">Dossiers</th>
+      <th style="text-align:right">CA total</th>
+      <th style="text-align:right">Signés</th>
+      <th style="text-align:right">CA signé</th>
+      <th style="text-align:right">Tx conv.</th>
+      <th style="text-align:right">Panier moy.</th>
+      <th style="text-align:right">Part du CA</th>
+    </tr></thead><tbody>`;
+    const totalCA=sLeads.reduce((s,l)=>s+l.amount,0)||1;
+    ptypesUsed.forEach(pt=>{
+      const ml=sLeads.filter(l=>(l.ptype||"Non renseigné")===pt);
+      const wn=ml.filter(l=>l.status==="won"),ls=ml.filter(l=>l.status==="lost");
+      const ca=ml.reduce((s,l)=>s+l.amount,0);
+      const caW=wn.reduce((s,l)=>s+l.amount,0);
+      const cl=wn.length+ls.length;
+      const txC=cl?Math.round(wn.length/cl*100):null;
+      const pm=ml.length?Math.round(ca/ml.length):0;
+      const part=Math.round(ca/totalCA*100);
+      const col=ptColors[pt]||"#6b7280";
+      const cc2=txC>=60?"#16a34a":txC>=30?"#d97706":"#dc2626";
+      html+=`<tr class="tr-click" style="cursor:default">
+        <td><span style="display:inline-flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:50%;background:${col};display:inline-block"></span><b>${pt}</b></span></td>
+        <td style="text-align:right;color:#4f46e5;font-weight:600">${ml.length}</td>
+        <td style="text-align:right">${fmtE(ca)}</td>
+        <td style="text-align:right;color:#16a34a;font-weight:600">${wn.length}</td>
+        <td style="text-align:right;color:#16a34a;font-weight:700">${fmtE(caW)}</td>
+        <td style="text-align:right">${txC!==null?`<span style="color:${cc2};font-weight:700">${txC}%</span>`:"—"}</td>
+        <td style="text-align:right;color:#6b7280">${fmtE(pm)}</td>
+        <td style="text-align:right">
+          <div style="display:flex;align-items:center;gap:6px;justify-content:flex-end">
+            <div style="width:50px;height:6px;background:#f3f4f6;border-radius:3px"><div style="height:6px;border-radius:3px;background:${col};width:${part}%"></div></div>
+            <span style="font-size:11px;color:#6b7280">${part}%</span>
+          </div>
+        </td>
+      </tr>`;
+    });
+    html+=`</tbody></table></div>`;
+
+    // Par vendeur × type produit
+    html+=`<div style="font-weight:600;font-size:13px;margin-bottom:12px;color:#374151">📊 Par vendeur × type de produit</div>`;
+    html+=`<div style="overflow-x:auto"><table><thead><tr>
+      <th>Vendeur</th>
+      ${ptypesUsed.filter(p=>p!=="Non renseigné").map(pt=>`<th style="text-align:right;font-size:11px">${pt}</th>`).join("")}
+    </tr></thead><tbody>`;
+    vSpsFiltered.forEach(sp=>{
+      const row=ptypesUsed.filter(p=>p!=="Non renseigné").map(pt=>{
+        const ml=sLeads.filter(l=>l.salesperson===sp&&(l.ptype||"")===pt);
+        const caW=ml.filter(l=>l.status==="won").reduce((s,l)=>s+l.amount,0);
+        return ml.length?`<div style="font-weight:600;color:${ptColors[pt]||'#374151'}">${ml.length} dossier${ml.length>1?"s":""}</div><div style="font-size:10px;color:#9ca3af">${fmtE(caW)} signé</div>`:"<span style='color:#d1d5db'>—</span>";
+      });
+      html+=`<tr class="tr-click" style="cursor:default"><td style="font-weight:600">${sp}</td>${row.map(r=>`<td style="text-align:right;padding:8px 10px">${r}</td>`).join("")}</tr>`;
+    });
+    html+=`</tbody></table></div>`;
+
+    // Par magasin × type produit
+    html+=`<div style="font-weight:600;font-size:13px;margin:20px 0 12px;color:#374151">🏪 Par magasin × type de produit</div>`;
+    html+=`<div style="overflow-x:auto"><table><thead><tr>
+      <th>Magasin</th>
+      ${ptypesUsed.filter(p=>p!=="Non renseigné").map(pt=>`<th style="text-align:right;font-size:11px">${pt}</th>`).join("")}
+    </tr></thead><tbody>`;
+    STORES.forEach(st=>{
+      const stLeads=sLeads.filter(l=>l.store===st);
+      if(!stLeads.length)return;
+      const row=ptypesUsed.filter(p=>p!=="Non renseigné").map(pt=>{
+        const ml=stLeads.filter(l=>(l.ptype||"")===pt);
+        const caW=ml.filter(l=>l.status==="won").reduce((s,l)=>s+l.amount,0);
+        return ml.length?`<div style="font-weight:600;color:${ptColors[pt]||'#374151'}">${ml.length} dossier${ml.length>1?"s":""}</div><div style="font-size:10px;color:#9ca3af">${fmtE(caW)} signé</div>`:"<span style='color:#d1d5db'>—</span>";
+      });
+      html+=`<tr class="tr-click" style="cursor:default"><td style="font-weight:600">${st}</td>${row.map(r=>`<td style="text-align:right;padding:8px 10px">${r}</td>`).join("")}</tr>`;
+    });
+    html+=`</tbody></table></div>`;
+
+    html+=`<div style="margin-top:12px;font-size:11px;color:#9ca3af;font-style:italic">Note : seuls les dossiers avec un type de produit renseigné apparaissent ici. Pensez à renseigner le type lors de la création.</div>`;
+    html+=`</div>`;
+  }
+
+  return html;
+}
+function modalVenteHTML(){
+  const q=(modalData.q||"").toLowerCase();
+  const matches=q.length>=2?leads.filter(l=>{
+    const n=fmtN(l).toLowerCase();
+    return n.includes(q)||l.salesperson.toLowerCase().includes(q);
+  }).slice(0,8):[];
+
+  return `<div class="modal" onclick="event.stopPropagation()" style="width:580px;max-height:90vh;overflow-y:auto">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div>
+        <div class="modal-title" style="margin:0;color:#16a34a">💰 Saisir une vente signée</div>
+        <div style="font-size:12px;color:#9ca3af;margin-top:2px">Recherchez le dossier existant ou créez une vente directe</div>
+      </div>
+      <button onclick="closeModal()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#9ca3af">×</button>
+    </div>
+
+    <!-- RECHERCHE -->
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px;margin-bottom:14px">
+      <label style="font-size:12px;font-weight:600;color:#16a34a;display:block;margin-bottom:8px">🔍 Rechercher un dossier existant</label>
+      <input id="vente_q" type="text" placeholder="Nom du client ou vendeur…" value="${modalData.q||""}"
+        oninput="modalData.q=this.value;render();setTimeout(()=>{const el=document.getElementById('vente_q');if(el){el.focus();el.setSelectionRange(el.value.length,el.value.length);}},0)"
+        style="width:100%;border:1px solid #bbf7d0;border-radius:8px;padding:10px 14px;font-size:14px;outline:none;background:#fff">
+
+      ${matches.length?`<div style="margin-top:10px;display:flex;flex-direction:column;gap:6px">
+        ${matches.map(l=>{
+          const ov=l.status==="won";
+          const lost=l.status==="lost";
+          return `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:#fff;border:1px solid ${ov?"#bbf7d0":lost?"#fca5a5":"#e8eaed"};border-radius:8px;cursor:${ov?"default":"pointer"}" ${ov?"":"onclick=\"modalData.selected='"+l.id+"';render()\""}>
+            <span style="font-size:16px">${ov?"✅":lost?"❌":TEMP[l.temperature].e}</span>
+            <div style="flex:1">
+              <div style="font-weight:600;font-size:13px">${fmtN(l)} <span style="font-size:10px;color:#9ca3af">· ${l.salesperson} · ${l.store||""}</span></div>
+              <div style="font-size:11px;color:#6b7280">${fmtE(l.amount)} · ${ov?"Déjà gagné":lost?"Perdu":"En cours"}</div>
+            </div>
+            ${!ov&&!lost?`<span style="background:#16a34a;color:#fff;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600">✓ Sélectionner</span>`:""}
+          </div>`;
+        }).join("")}
+      </div>`:`${q.length>=2?`<div style="font-size:12px;color:#9ca3af;margin-top:8px;font-style:italic">Aucun dossier trouvé pour "${modalData.q}"</div>`:`<div style="font-size:12px;color:#9ca3af;margin-top:6px">Tapez au moins 2 lettres pour rechercher</div>`}`}
+    </div>
+
+    <!-- FORMULAIRE SI SÉLECTIONNÉ -->
+    ${modalData.selected?`
+    ${(()=>{
+      const l=leads.find(x=>x.id===modalData.selected);
+      if(!l)return"";
+      return `<div style="background:#f0fdf4;border:2px solid #16a34a;border-radius:10px;padding:14px;margin-bottom:14px">
+        <div style="font-weight:700;color:#16a34a;margin-bottom:10px">✅ Dossier sélectionné : ${fmtN(l)}</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+          <div><label class="lbl">Montant signé réel (€)</label><input id="v_amt" type="number" value="${l.amount}" style="width:100%;border:1px solid #d1d5db;border-radius:7px;padding:8px 10px"></div>
+          <div><label class="lbl">📅 Date de signature</label><input id="v_date" type="date" value="${new Date().toISOString().slice(0,10)}" style="width:100%;border:1px solid #d1d5db;border-radius:7px;padding:8px 10px"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+          <div><label class="lbl">💹 Montant marge (€) <span style="color:#9ca3af;font-weight:400">— optionnel</span></label><input id="v_marge" type="number" placeholder="Ex: 3500"
+          oninput="const a=parseFloat(document.getElementById('v_amt')?.value||0);const m=parseFloat(this.value||0);if(a>0&&m>0)document.getElementById('v_margepct').value=Math.round(m/a*100)"
+          style="width:100%;border:1px solid #d1d5db;border-radius:7px;padding:8px 10px"></div>
+        <div><label class="lbl">% Marge <span style="color:#9ca3af;font-weight:400">— ou en %</span></label><input id="v_margepct" type="number" placeholder="Ex: 28" min="0" max="100"
+          oninput="const a=parseFloat(document.getElementById('v_amt')?.value||0);const p=parseFloat(this.value||0);if(a>0&&p>0)document.getElementById('v_marge').value=Math.round(a*p/100)"
+          style="width:100%;border:1px solid #d1d5db;border-radius:7px;padding:8px 10px"></div>
+        </div>
+        <div><label class="lbl">💬 Commentaire de signature</label><input id="v_comment" type="text" placeholder="Produit retenu, remarques…" style="width:100%;border:1px solid #d1d5db;border-radius:7px;padding:8px 10px"></div>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button onclick="modalData.selected=null;render()" style="flex:1;background:#f3f4f6;border:1px solid #d1d5db;border-radius:7px;padding:9px;font-size:12px;cursor:pointer">← Changer</button>
+          <button onclick="saveVente()" style="flex:2;background:#16a34a;color:#fff;border:none;border-radius:7px;padding:9px;font-size:13px;font-weight:700;cursor:pointer">✅ Valider la vente</button>
+        </div>
+      </div>`;
+    })()}`:""}
+
+    <!-- VENTE DIRECTE (dossier inexistant) -->
+    <div style="border:1px solid #e8eaed;border-radius:10px;padding:14px">
+      <div style="font-weight:600;font-size:13px;margin-bottom:4px">➕ Dossier inexistant ? Créer une vente directe</div>
+      <div style="font-size:12px;color:#9ca3af;margin-bottom:12px">Vente en magasin non saisie, ou devis oublié — le dossier sera créé directement en Gagné.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div><label class="lbl">Nom client *</label><input id="vd_name" type="text" placeholder="DUPONT Jean" style="width:100%;border:1px solid #d1d5db;border-radius:7px;padding:8px 10px"></div>
+        <div><label class="lbl">Montant signé (€) *</label><input id="vd_amt" type="number" placeholder="15000" style="width:100%;border:1px solid #d1d5db;border-radius:7px;padding:8px 10px"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px">
+        <div><label class="lbl">Vendeur *</label><select id="vd_sp" style="width:100%;border:1px solid #d1d5db;border-radius:7px;padding:8px 10px">${SPS.map(s=>`<option>${s}</option>`).join("")}</select></div>
+        <div><label class="lbl">Magasin *</label><select id="vd_store" style="width:100%;border:1px solid #d1d5db;border-radius:7px;padding:8px 10px"><option value="">— Choisir —</option>${STORES.map(s=>`<option>${s}</option>`).join("")}</select></div>
+        <div><label class="lbl">📅 Date signature</label><input id="vd_date" type="date" value="${new Date().toISOString().slice(0,10)}" style="width:100%;border:1px solid #d1d5db;border-radius:7px;padding:8px 10px"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div><label class="lbl">💹 Marge (€)</label><input id="vd_marge" type="number" placeholder="Optionnel"
+          oninput="const a=parseFloat(document.getElementById('vd_amt')?.value||0);const m=parseFloat(this.value||0);if(a>0&&m>0){const pEl=document.getElementById('vd_margepct');if(pEl)pEl.value=Math.round(m/a*100);}"
+          style="width:100%;border:1px solid #d1d5db;border-radius:7px;padding:8px 10px"></div>
+        <div><label class="lbl">% Marge</label><input id="vd_margepct" type="number" placeholder="Ex: 28" min="0" max="100"
+          oninput="const a=parseFloat(document.getElementById('vd_amt')?.value||0);const p=parseFloat(this.value||0);if(a>0&&p>0){const mEl=document.getElementById('vd_marge');if(mEl)mEl.value=Math.round(a*p/100);}"
+          style="width:100%;border:1px solid #d1d5db;border-radius:7px;padding:8px 10px"></div>
+        <div><label class="lbl">🏷️ Type produit</label><select id="vd_ptype" style="width:100%;border:1px solid #d1d5db;border-radius:7px;padding:8px 10px"><option value="">—</option>${PTYPES.map(p=>`<option>${p}</option>`).join("")}</select></div>
+      </div>
+      <button onclick="saveVenteDirect()" style="width:100%;background:#16a34a;color:#fff;border:none;border-radius:7px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;margin-top:4px">✅ Créer et marquer comme Gagné</button>
+    </div>
+  </div>`;
+}
+
+window.saveVente=function(){
+  const l=leads.find(x=>x.id===modalData.selected);
+  if(!l)return;
+  const amt=parseFloat(document.getElementById("v_amt")?.value||l.amount);
+  const date=document.getElementById("v_date")?.value||new Date().toISOString().slice(0,10);
+  const marge=parseFloat(document.getElementById("v_marge")?.value||0);
+  const margepct=parseFloat(document.getElementById("v_margepct")?.value||0);
+  const comment=document.getElementById("v_comment")?.value?.trim()||"";
+  const margeInfo=marge?` — Marge : ${fmtE(marge)}`:(margepct?` — Marge : ${margepct}%`:"");
+  leads=leads.map(x=>x.id===l.id?{...x,status:"won",amount:amt,marge:marge||Math.round(amt*margepct/100)||0,expectedCloseDate:date.slice(0,7)}:x);
+  fups=[{id:gid(),leadId:l.id,type:"store",comment:`✅ Vente confirmée${margeInfo}${comment?" — "+comment:""}`,temperature:"hot",expectedCloseDate:date.slice(0,7),nextFollowupDate:"",outcome:"won",lostReason:"",author:user,date:new Date().toISOString()},...fups];
+  save();closeModal();
+};
+
+window.saveVenteDirect=function(){
+  const name=document.getElementById("vd_name")?.value?.trim();
+  const amt=parseFloat(document.getElementById("vd_amt")?.value||0);
+  const sp=document.getElementById("vd_sp")?.value;
+  const store=document.getElementById("vd_store")?.value;
+  const date=document.getElementById("vd_date")?.value||new Date().toISOString().slice(0,10);
+  const marge=parseFloat(document.getElementById("vd_marge")?.value||0);
+  const margepct=parseFloat(document.getElementById("vd_margepct")?.value||0);
+  const margeFinale=marge||(margepct&&amt?Math.round(amt*margepct/100):0);
+  const ptype=document.getElementById("vd_ptype")?.value||"";
+  if(!name||!amt||!store){
+    [["vd_name",!name],["vd_amt",!amt],["vd_store",!store]].forEach(([id,err])=>{
+      if(!err)return;
+      const el=document.getElementById(id);if(!el)return;
+      el.style.outline="2.5px solid #dc2626";
+      let n=0;const t=setInterval(()=>{el.style.outline=n%2===0?"2.5px solid #dc2626":"2.5px solid transparent";n++;if(n>=6){clearInterval(t);el.style.outline="2.5px solid #dc2626";}},180);
+    });return;
+  }
+  const newId=gid();
+  leads=[{id:newId,clientName:name,prenom:"",amount:amt,temperature:"hot",salesperson:sp,store,relanceur:sp,ptype,marge:margeFinale,expectedCloseDate:date.slice(0,7),nextFollowupDate:"",createdAt:new Date().toISOString(),status:"won",signedDirect:true,lostReason:""},...leads];
+  fups=[{id:gid(),leadId:newId,type:"store",comment:`✅ Vente directe${margeFinale?" — Marge : "+fmtE(margeFinale)+(margepct?" ("+margepct+"%)":""):""}`,temperature:"hot",expectedCloseDate:date.slice(0,7),nextFollowupDate:"",outcome:"won",lostReason:"",author:user,date:new Date().toISOString()},...fups];
+  save();closeModal();
+};
+
+// ─── MODAL HISTORIQUE ─────────────────────────────────────────
+function modalHistHTML(){
+  const l=leads.find(x=>x.id===modalData.leadId);
+  if(!l)return'<div class="modal"><p>Dossier introuvable</p></div>';
+  const lFups=fups.filter(f=>f.leadId===l.id).sort((a,b)=>new Date(b.date)-new Date(a.date));
+  let html=`<div class="modal" onclick="event.stopPropagation()" style="width:560px">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px">
+      <div>
+        <div style="font-weight:700;font-size:16px">${fmtN(l)}</div>
+        <div style="font-size:11px;color:#9ca3af;margin-top:2px">${l.salesperson} · ${l.store||""} · ${fmtE(l.amount)}</div>
+      </div>
+      <button onclick="closeModal()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#9ca3af;line-height:1">×</button>
+    </div>`;
+
+  if(!lFups.length){
+    html+=`<div class="empty" style="padding:30px">Aucune relance enregistrée.</div>`;
+  } else {
+    lFups.forEach((fu,i)=>{
+      const ct=CTYPES.find(c=>c[0]===fu.type)||["","?","?"];
+      const bc=fu.outcome==="won"?"#16a34a":fu.outcome==="lost"?"#9ca3af":"#4f46e5";
+      const isLast=i===0;
+      const prevFu=lFups[i+1];
+      const tempChanged=fu.temperature&&prevFu&&prevFu.temperature&&fu.temperature!==prevFu.temperature;
+      const tempArrow=tempChanged?`<div style="display:inline-flex;align-items:center;gap:5px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;margin-bottom:8px">
+        <span>${TEMP[prevFu.temperature].e}</span>
+        <span style="color:#9ca3af">→</span>
+        <span>${TEMP[fu.temperature].e}</span>
+        <span style="color:${TEMP[fu.temperature].color};margin-left:2px">Passé ${TEMP[prevFu.temperature].l} → ${TEMP[fu.temperature].l}</span>
+      </div>`:"";
+      html+=`<div style="border-left:3px solid ${bc};padding:12px 14px;margin-bottom:8px;background:${isLast?"#f8faff":"#fafafa"};border-radius:0 8px 8px 0;${isLast?"border:1px solid #e0e7ff;border-left:3px solid "+bc:""}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+          <div style="display:flex;gap:8px;align-items:center">
+            ${isLast?`<span style="background:#4f46e5;color:#fff;font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px">DERNIÈRE</span>`:""}
+            <span style="font-size:14px">${ct[1]}</span>
+            <span style="font-weight:600;font-size:12px">${ct[2]}</span>
+            <span style="font-size:11px;color:#9ca3af">par ${fu.author}</span>
+          </div>
+          <span style="font-size:10px;color:#9ca3af;white-space:nowrap">${fmtDT(fu.date)}</span>
+        </div>
+        ${tempArrow}
+        ${fu.comment?`<div style="font-size:12px;color:#374151;line-height:1.55;background:#fff;border-radius:6px;padding:8px 10px;margin-bottom:8px;border:1px solid #e8eaed">${fu.comment}</div>`:"<div style='font-size:11px;color:#d1d5db;margin-bottom:6px;font-style:italic'>Pas de commentaire</div>"}
+        <div style="display:flex;gap:5px;flex-wrap:wrap">
+          ${fu.temperature&&fu.outcome==="pending"?`<span class="badge ${fu.temperature}">${TEMP[fu.temperature].e} ${TEMP[fu.temperature].l}</span>`:""}
+          ${fu.expectedCloseDate?`<span class="badge" style="background:#eef2ff;color:#4f46e5;border:1px solid #c7d2fe">🖊 ${fmtM(fu.expectedCloseDate)}</span>`:""}
+          ${fu.nextFollowupDate&&fu.outcome==="pending"?`<span class="badge" style="background:#f0f9ff;color:#0284c7;border:1px solid #bae6fd">🔔 ${fmtD(fu.nextFollowupDate)}</span>`:""}
+          ${fu.outcome==="won"?`<span class="badge won">✅ Gagné</span>`:""}
+          ${fu.outcome==="lost"?`<span class="badge lost">❌ ${fu.lostReason||"Perdu"}</span>`:""}
+        </div>
+      </div>`;
+    });
+  }
+
+  html+=`<div style="display:flex;gap:8px;margin-top:16px;justify-content:space-between;align-items:center">
+    <span style="font-size:11px;color:#9ca3af">${lFups.length} relance${lFups.length>1?"s":""} au total</span>
+    <div style="display:flex;gap:8px">
+      ${l.status==="active"?`<button onclick="closeModal();setTimeout(()=>openModal('fup',{leadId:'${l.id}'}),50)" style="background:#4f46e5;color:#fff;border:none;border-radius:7px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">+ Ajouter une relance</button>`:""}
+      <button onclick="closeModal();go('lead','${l.id}')" style="background:#f3f4f6;border:1px solid #d1d5db;color:#374151;border-radius:7px;padding:8px 14px;font-size:12px;cursor:pointer">Ouvrir le dossier →</button>
+    </div>
+  </div>
+  </div>`;
+  return html;
+}
+
+// ─── MODAL LEAD ───────────────────────────────────────────────
+let _signedDirect=false;
+function modalLeadHTML(){
+  return `<div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title">+ Nouveau dossier client</div>
+
+    <!-- MODE SIGNÉ DIRECT -->
+    <div style="display:flex;gap:8px;margin-bottom:16px">
+      <button id="mode_relance" onclick="setLeadMode(false)" style="flex:1;padding:10px;border-radius:8px;border:2px solid #4f46e5;background:#eef2ff;color:#4f46e5;font-weight:600;font-size:12px;cursor:pointer">
+        📋 Devis en cours de relance
+      </button>
+      <button id="mode_signe" onclick="setLeadMode(true)" style="flex:1;padding:10px;border-radius:8px;border:2px solid #e5e7eb;background:#fff;color:#6b7280;font-weight:500;font-size:12px;cursor:pointer">
+        ✅ Signé directement
+      </button>
+    </div>
+    <div id="signed_banner" style="display:none;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px 14px;font-size:12px;color:#16a34a;font-weight:600;margin-bottom:14px">
+      ✅ Ce dossier sera enregistré directement comme GAGNÉ — aucune relance nécessaire.
+    </div>
+
+    <div class="field"><label class="lbl">Nom du client *</label><input id="m_name" placeholder="Ex: Dupont SAS" oninput="checkDuplicate(this.value)">
+    <div id="m_dup_alert" style="display:none;margin-top:6px;padding:8px 12px;background:#fffbe6;border:1px solid #ffe58f;border-radius:7px;font-size:12px;color:#ad6800"></div>
+    </div>
+    <div class="field"><label class="lbl">Prénom du contact</label><input id="m_prenom" placeholder="Ex: Jean"></div>
+    <div class="field"><label class="lbl">Montant du devis (€) *</label><input id="m_amt" type="number" placeholder="10000"></div>
+    <div class="field"><label class="lbl">Commentaire initial</label><textarea id="m_comment" rows="2" placeholder="Contexte, notes…" style="resize:vertical"></textarea></div>
+    <div class="grid-half" style="margin-bottom:12px">
+      <div><label class="lbl">Vendeur *</label><select id="m_sp" style="color:#6b7280"><option value="">— Choisir un vendeur —</option>${SPS.map(s=>`<option>${s}</option>`).join("")}</select></div>
+      <div><label class="lbl">🏪 Magasin *</label><select id="m_store" style="color:#6b7280" onchange="updateRelanceurOptions(this.value)"><option value="">— Choisir un magasin —</option>${STORES.map(s=>`<option>${s}</option>`).join("")}</select></div>
+    </div>
+
+    <!-- CHAMPS RELANCE (masqués si signé direct) -->
+    <div id="relance_fields">
+    <div class="field"><label class="lbl">👤 Responsable de la relance</label>
+      <select id="m_relanceur">${[...SPS,...SECS].filter((v,i,a)=>a.indexOf(v)===i).map(s=>`<option>${s}</option>`).join("")}</select>
+      <div style="font-size:10px;color:#9ca3af;margin-top:3px">⚠ Choisissez d'abord le magasin — la liste des secrétaires s'adapte</div>
+    </div>
+      <div class="field"><label class="lbl">🏷️ Type de produit</label><select id="m_ptype"><option value="">— Choisir —</option>${PTYPES.map(p=>`<option>${p}</option>`).join("")}</select></div>
+    <div class="field"><label class="lbl">Température *</label>
+        <div class="temp-row">
+          <button class="tbtn warm" id="tbtn_hot" onclick="setTemp('hot')">🔥 Chaud</button>
+          <button class="tbtn warm" id="tbtn_warm" onclick="setTemp('warm')">🌡️ Tiède</button>
+          <button class="tbtn cold" id="tbtn_cold" onclick="setTemp('cold')">❄️ Froid</button>
+        </div>
+      </div>
+      <div class="grid-half">
+        <div class="field"><label class="lbl">🖊 Mois de signature prévu</label><input id="m_ecd" type="month" onchange="document.getElementById('m_month_hint').textContent=this.value?'→ '+fmtM(this.value):''"><div id="m_month_hint" class="month-hint"></div></div>
+        <div class="field"><label class="lbl">🔔 Date de relance</label><input id="m_rel" type="date"></div>
+      </div>
+    </div>
+
+    <!-- CHAMPS SIGNÉ DIRECT -->
+    <div id="signe_fields" style="display:none">
+      <div class="grid-half">
+        <div class="field"><label class="lbl">📅 Date de signature</label><input id="m_signdate" type="date" value="${new Date().toISOString().slice(0,10)}"></div>
+        <div class="field"><label class="lbl">💬 Produit / remarque</label><input id="m_signremark" placeholder="Ex: Piscine 8x4, kit complet…"></div>
+      </div>
+    </div>
+
+    <div class="row-end">
+      <button class="btn-g" onclick="closeModal()">Annuler</button>
+      <button class="btn-p" id="m_submit_btn" onclick="saveLead()">Créer le dossier</button>
+    </div>
+  </div>`;}
+
+window.setLeadMode=function(signed){
+  _signedDirect=signed;
+  document.getElementById("mode_relance").style.cssText=signed?"flex:1;padding:10px;border-radius:8px;border:2px solid #e5e7eb;background:#fff;color:#6b7280;font-weight:500;font-size:12px;cursor:pointer":"flex:1;padding:10px;border-radius:8px;border:2px solid #4f46e5;background:#eef2ff;color:#4f46e5;font-weight:600;font-size:12px;cursor:pointer";
+  document.getElementById("mode_signe").style.cssText=signed?"flex:1;padding:10px;border-radius:8px;border:2px solid #16a34a;background:#f0fdf4;color:#16a34a;font-weight:600;font-size:12px;cursor:pointer":"flex:1;padding:10px;border-radius:8px;border:2px solid #e5e7eb;background:#fff;color:#6b7280;font-weight:500;font-size:12px;cursor:pointer";
+  document.getElementById("relance_fields").style.display=signed?"none":"block";
+  document.getElementById("signe_fields").style.display=signed?"block":"none";
+  document.getElementById("signed_banner").style.display=signed?"block":"none";
+  document.getElementById("m_submit_btn").textContent=signed?"✅ Enregistrer comme Gagné":"Créer le dossier";
+  document.getElementById("m_submit_btn").style.background=signed?"#16a34a":"#4f46e5";
+};
+
+// ─── MODAL RELANCE ────────────────────────────────────────────
+function modalFupHTML(){
+  const l=leads.find(x=>x.id===modalData.leadId)||{};
+  return `<div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title">📞 Nouvelle relance</div>
+    <div class="modal-sub">${l.clientName||""} — ${fmtE(l.amount||0)}</div>
+    <div class="field"><label class="lbl">Type de contact</label>
+      <div class="ctype-grid" style="grid-template-columns:1fr 1fr 1fr">${CTYPES.map(([v,ic,lb],i)=>`<button class="ctbtn${i===0?" sel":""}" id="ct_${v}" onclick="setCT('${v}')">${ic} ${lb}</button>`).join("")}</div>
+    </div>
+    <div class="field"><label class="lbl">Commentaire</label><textarea id="f_comment" rows="3" placeholder="Résumé de l'échange, objections, prochaines étapes…"></textarea></div>
+    <div class="field"><label class="lbl">Température actuelle <span style="color:#dc2626">*</span></label>
+      <div class="temp-row" id="f_temp_box">
+        <button class="tbtn" id="ftbtn_hot" onclick="setFTemp('hot')">🔥 Chaud</button>
+        <button class="tbtn ${l.temperature||'warm'}" id="ftbtn_${l.temperature||'warm'}" onclick="setFTemp('${l.temperature||'warm'}')">🌡️ Tiède</button>
+        <button class="tbtn" id="ftbtn_cold" onclick="setFTemp('cold')">❄️ Froid</button>
+      </div>
+    </div>
+    <div class="date-box" id="f_dates_box">
+      <div class="date-box-title">📅 Mise à jour des dates <span style="color:#dc2626;font-size:10px">(obligatoires)</span></div>
+      <div class="grid-half">
+        <div><label class="lbl" style="color:#0369a1">🖊 Mois de signature <span style="color:#dc2626">*</span></label><input id="f_ecd" type="month" value="${l.expectedCloseDate||""}" onchange="document.getElementById('f_month_hint').textContent=this.value?'→ '+fmtM(this.value):'';document.getElementById('f_ecd').style.outline='';"><div id="f_month_hint" class="month-hint">${l.expectedCloseDate?"→ "+fmtM(l.expectedCloseDate):""}</div></div>
+        <div><label class="lbl" style="color:#0369a1">🔔 Prochaine relance <span style="color:#dc2626">*</span></label><input id="f_rel" type="date" onchange="this.style.outline=''"></div>
+      </div>
+    </div>
+    <div class="field"><label class="lbl">Résultat</label>
+      <div class="res-row">
+        <button class="rbtn sel" id="rb_pending" onclick="setOutcome('pending')">🔄 En cours</button>
+        <button class="rbtn" id="rb_won" onclick="setOutcome('won')">✅ Gagné</button>
+        <button class="rbtn" id="rb_lost" onclick="setOutcome('lost')">❌ Perdu</button>
+      </div>
+    </div>
+    <div id="loss_div" style="display:none"><label class="lbl">Raison de la perte <span style="color:#dc2626">*</span></label>
+      <div class="loss-grid">${LOSS.map(l=>`<button class="lbtn" onclick="setLoss(this,'${l.replace(/'/g,"\\'")}')">  ${l}</button>`).join("")}</div>
+    </div>
+    <div id="fup_error" style="display:none;background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:10px 14px;font-size:12px;color:#dc2626;font-weight:600;margin-bottom:10px"></div>
+    <div class="row-end">
+      <button class="btn-g" onclick="closeModal()">Annuler</button>
+      <button class="btn-p" onclick="saveFup()">Enregistrer</button>
+    </div>
+  </div>`;
+}
+
+// ─── GLOBAL STATE VARS ─────────────────────────────────────────
+let _newTemp="warm", _fTemp="warm", _ct="call", _outcome="pending", _lossReason="";
+
+window.setTemp=t=>{_newTemp=t;["hot","warm","cold"].forEach(x=>{const b=document.getElementById("tbtn_"+x);if(b){b.className="tbtn"+(x===t?" "+t:"");}});};
+window.setFTemp=t=>{_fTemp=t;["hot","warm","cold"].forEach(x=>{const b=document.getElementById("ftbtn_"+x);if(b){b.className="tbtn"+(x===t?" "+t:"");}});};
+window.setCT=v=>{_ct=v;document.querySelectorAll(".ctbtn").forEach(b=>{b.classList.remove("sel");});const b=document.getElementById("ct_"+v);if(b)b.classList.add("sel");};
+window.setOutcome=v=>{_outcome=v;["pending","won","lost"].forEach(x=>{const b=document.getElementById("rb_"+x);if(b){b.className="rbtn"+(x===v?" sel":"");}});const ld=document.getElementById("loss_div");if(ld)ld.style.display=v==="lost"?"block":"none";};
+window.setLoss=(btn,val)=>{_lossReason=val;document.querySelectorAll(".lbtn").forEach(b=>b.classList.remove("sel"));btn.classList.add("sel");};
+window.state_filt_sp=sp=>{filt.sp=sp;};
+window.toggleSort=col=>{if(sort.col===col){sort.dir=sort.dir==="asc"?"desc":"asc";}else{sort.col=col;sort.dir=col==="amount"?"desc":"asc";}render();};
+window.checkDuplicate=function(val){
+  const alert=document.getElementById("m_dup_alert");
+  if(!alert)return;
+  const q=(val||"").trim().toLowerCase();
+  if(q.length<3){alert.style.display="none";return;}
+  // Cherche les dossiers existants dont le nom ressemble
+  const matches=leads.filter(l=>{
+    const n=(fmtN(l)||"").toLowerCase();
+    return n.includes(q)||q.includes(n.slice(0,Math.min(n.length,q.length)));
+  }).slice(0,5);
+  if(!matches.length){alert.style.display="none";return;}
+  alert.style.display="block";
+  alert.innerHTML=`⚠ <b>${matches.length} dossier${matches.length>1?"s":""} similaire${matches.length>1?"s":""} déjà existant${matches.length>1?"s":""}</b> :<br>`+
+    matches.map(l=>`<span style="display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid #ffe58f;border-radius:8px;padding:3px 10px;margin:3px 2px;font-size:11px">
+      ${TEMP[l.temperature]?.e||""} <b>${fmtN(l)}</b> · ${l.salesperson} · ${l.store||""} · ${fmtE(l.amount)}
+      <span style="color:${l.status==="won"?"#16a34a":l.status==="lost"?"#9ca3af":"#4f46e5"};font-weight:600">${l.status==="won"?"✅ Gagné":l.status==="lost"?"❌ Perdu":"🔄 En cours"}</span>
+    </span>`).join("");
+};
+window.switchFcTab=function(store){
+  // Masquer tous les tableaux
+  document.querySelectorAll('[id^="fctab_"]').forEach(el=>el.style.display="none");
+  // Réinitialiser tous les boutons
+  document.querySelectorAll('[id^="fc_tab_"]').forEach(b=>{b.style.background="#fff";b.style.color="#374151";b.style.border="1px solid #d1d5db";});
+  // Afficher le bon tableau et activer le bon bouton
+  const tabId=store==="total"?"total":store.replace(/[^a-z0-9]/gi,"_");
+  const tab=document.getElementById("fctab_"+tabId);
+  const btn=document.getElementById("fc_tab_"+tabId);
+  if(tab)tab.style.display="block";
+  if(btn){btn.style.background="#4f46e5";btn.style.color="#fff";btn.style.border="none";}
+};
+window.toggleFcDetail=function(id){
+  const row=document.getElementById(id);
+  const btn=document.getElementById("btn_"+id);
+  if(!row||!btn)return;
+  const isOpen=row.style.display!=="none";
+  row.style.display=isOpen?"none":"table-row";
+  btn.textContent=isOpen?"▼ voir":"▲ masquer";
+  btn.style.background=isOpen?"#f0f9ff":"#eef2ff";
+  btn.style.color=isOpen?"#0369a1":"#4f46e5";
+  btn.style.borderColor=isOpen?"#bae6fd":"#c7d2fe";
+};
+window.toggleLossDetail=function(){
+  const btn=document.getElementById("loss_detail_btn");
+  const details=document.querySelectorAll("[id^='loss_detail_']");
+  const isOpen=btn.textContent.startsWith("−");
+  details.forEach(d=>{d.style.display=isOpen?"none":"block";});
+  btn.textContent=isOpen?"+ Voir CA & panier moyen":"− Masquer les détails";
+  btn.style.background=isOpen?"#f3f4f6":"#eef2ff";
+  btn.style.color=isOpen?"#374151":"#4f46e5";
+  btn.style.borderColor=isOpen?"#d1d5db":"#c7d2fe";
+};
+
+window.saveLead=()=>{
+  const name=document.getElementById("m_name")?.value?.trim();
+  const prenom=document.getElementById("m_prenom")?.value?.trim()||"";
+  const amt=parseFloat(document.getElementById("m_amt")?.value||0);
+  const comment=document.getElementById("m_comment")?.value?.trim()||"";
+  const sp=document.getElementById("m_sp")?.value||"";
+  const store=document.getElementById("m_store")?.value||"";
+  if(!name||!amt||!store||!sp){
+    const blink=el=>{
+      if(!el)return;
+      el.style.outline="2.5px solid #dc2626";el.style.borderRadius="7px";
+      let n=0;const t=setInterval(()=>{el.style.outline=n%2===0?"2.5px solid #dc2626":"2.5px solid transparent";n++;if(n>=6){clearInterval(t);el.style.outline="2.5px solid #dc2626";}},180);
+    };
+    if(!name) blink(document.getElementById("m_name"));
+    if(!amt)  blink(document.getElementById("m_amt"));
+    if(!sp)   blink(document.getElementById("m_sp"));
+    if(!store) blink(document.getElementById("m_store"));
+    return;
+  }
+  const newId=gid();
+
+  if(_signedDirect){
+    // Mode signé directement
+    const signDate=document.getElementById("m_signdate")?.value||new Date().toISOString().slice(0,10);
+    const remark=document.getElementById("m_signremark")?.value?.trim()||"";
+    const fullComment=(comment?(comment+(remark?" — "+remark:"")):remark)||"Vente directe";
+    leads=[{id:newId,clientName:name,prenom,amount:amt,temperature:"hot",salesperson:sp,store,relanceur:sp,expectedCloseDate:signDate.slice(0,7),nextFollowupDate:"",createdAt:new Date().toISOString(),status:"won",signedDirect:true,lostReason:""},...leads];
+    fups=[{id:gid(),leadId:newId,type:"store",comment:"✅ Vente directe — "+fullComment,temperature:"hot",expectedCloseDate:signDate.slice(0,7),nextFollowupDate:"",outcome:"won",lostReason:"",author:user,date:new Date().toISOString()},...fups];
+    _signedDirect=false;
+  } else {
+    // Mode normal
+    const relanceur=document.getElementById("m_relanceur")?.value||sp;
+    const ecd=document.getElementById("m_ecd")?.value||"";
+    const rel=document.getElementById("m_rel")?.value||"";
+    const ptype=document.getElementById("m_ptype")?.value||"";
+    leads=[{id:newId,clientName:name,prenom,amount:amt,temperature:_newTemp,salesperson:sp,store,relanceur,ptype,expectedCloseDate:ecd,nextFollowupDate:rel,createdAt:new Date().toISOString(),status:"active",commentInit:comment},...leads];
+    if(comment){
+      fups=[{id:gid(),leadId:newId,type:"call",comment,temperature:_newTemp,expectedCloseDate:ecd,nextFollowupDate:rel,outcome:"pending",lostReason:"",author:user,date:new Date().toISOString()},...fups];
+    }
+  }
+  save();closeModal();
+};
+
+window.saveFup=()=>{
+  const comment=document.getElementById("f_comment")?.value||"";
+  const ecd=document.getElementById("f_ecd")?.value||"";
+  const rel=document.getElementById("f_rel")?.value||"";
+
+  // Validation — champs obligatoires
+  let errors=[];
+  if(!_fTemp) errors.push("f_temp_box");
+  if(_outcome==="pending"){
+    if(!rel)  errors.push("f_rel");
+    if(!ecd)  errors.push("f_ecd");
+  }
+  if(_outcome==="lost"&&!_lossReason) errors.push("loss_div");
+
+  if(errors.length){
+    errors.forEach(id=>{
+      const el=document.getElementById(id);
+      if(!el)return;
+      el.style.transition="";
+      el.style.outline="2.5px solid #dc2626";
+      el.style.borderRadius="8px";
+      // Clignotement rouge
+      let count=0;
+      const blink=setInterval(()=>{
+        el.style.outline=count%2===0?"2.5px solid #dc2626":"2.5px solid transparent";
+        count++;
+        if(count>=6){clearInterval(blink);el.style.outline="2.5px solid #dc2626";}
+      },180);
+    });
+    // Message d'erreur
+    const msg=document.getElementById("fup_error");
+    if(msg){
+      msg.style.display="block";
+      msg.textContent="⚠ Champs obligatoires manquants : "+(
+        [!_fTemp?"Température":null, _outcome==="pending"&&!rel?"Date de relance":null, _outcome==="pending"&&!ecd?"Mois de signature":null, _outcome==="lost"&&!_lossReason?"Raison de la perte":null].filter(Boolean).join(", ")
+      );
+    }
+    return;
+  }
+
+  const fu={id:gid(),leadId:modalData.leadId,type:_ct,comment,temperature:_fTemp,expectedCloseDate:ecd,nextFollowupDate:rel,outcome:_outcome,lostReason:_lossReason,author:user,date:new Date().toISOString()};
+  fups=[fu,...fups];
+  const upd={nextFollowupDate:rel,temperature:_fTemp,expectedCloseDate:ecd};
+  if(_outcome==="won") upd.status="won";
+  if(_outcome==="lost"){upd.status="lost";upd.lostReason=_lossReason;}
+  leads=leads.map(l=>l.id===modalData.leadId?{...l,...upd}:l);
+  save();closeModal();
+};
+
+window.delLead=id=>{
+  if(!confirm("Supprimer ce dossier définitivement ?"))return;
+  leads=leads.filter(l=>l.id!==id);fups=fups.filter(f=>f.leadId!==id);save();go("pipeline");
+};
+
+window.openModal=openModal;
+window.closeModal=closeModal;
+window.go=go;
+window.fmtM=fmtM;
+window.printRelances=function(mode){
+  const now=new Date();
+  const dayOfWeek=now.getDay()===0?7:now.getDay();
+  const monday=new Date(now);monday.setDate(now.getDate()-(dayOfWeek-1));monday.setHours(0,0,0,0);
+  const sunday=new Date(monday);sunday.setDate(monday.getDate()+6);sunday.setHours(23,59,59,999);
+  const fmtWk=d=>d.toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit",year:"numeric"});
+  const fmtD2=iso=>iso?new Date(iso).toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit",year:"numeric"}):"\u2014";
+
+  let fromDate=null,toDate=null,titre="";
+  if(mode==="week"){
+    fromDate=monday;toDate=sunday;
+    titre="Semaine du "+fmtWk(monday)+" au "+fmtWk(sunday);
+  } else if(mode==="retard"){
+    toDate=new Date();toDate.setHours(23,59,59,999);
+    titre="Relances en retard \u2014 jusqu'au "+fmtWk(toDate);
+  } else {
+    const fromVal=document.getElementById("print_from")?.value;
+    const toVal=document.getElementById("print_to")?.value;
+    if(fromVal){fromDate=new Date(fromVal);fromDate.setHours(0,0,0,0);}
+    if(toVal){toDate=new Date(toVal);toDate.setHours(23,59,59,999);}
+    if(fromDate&&toDate) titre="Relances du "+fmtWk(fromDate)+" au "+fmtWk(toDate);
+    else if(fromDate) titre="Relances \u00e0 partir du "+fmtWk(fromDate);
+    else if(toDate) titre="Relances jusqu'au "+fmtWk(toDate);
+    else titre="Toutes les relances \u00e0 venir";
+  }
+
+  const responsables=[...new Set([...SPS,...SECS])];
+  let sections="";
+  let totalRelances=0;
+
+  responsables.forEach(resp=>{
+    const myLeads=aL().filter(l=>(l.relanceur||l.salesperson)===resp);
+    const sortMode=window.relPrintSort||"date";
+    const tempFilter=window.relPrintTemp||"all";
+    const TEMP_ORDER={hot:0,warm:1,cold:2};
+    const filtered=myLeads.filter(l=>{
+      if(!l.nextFollowupDate)return false;
+      const d=new Date(l.nextFollowupDate);
+      if(fromDate&&d<fromDate)return false;
+      if(toDate&&d>toDate)return false;
+      if(tempFilter!=="all"&&l.temperature!==tempFilter)return false;
+      return true;
+    }).sort((a,b)=>{
+      if(sortMode==="amount_desc")return b.amount-a.amount;
+      if(sortMode==="amount_asc")return a.amount-b.amount;
+      if(sortMode==="temperature")return (TEMP_ORDER[a.temperature]||0)-(TEMP_ORDER[b.temperature]||0);
+      return new Date(a.nextFollowupDate)-new Date(b.nextFollowupDate);
+    });
+    if(!filtered.length)return;
+    totalRelances+=filtered.length;
+
+    let rows="";
+    filtered.forEach((l,i)=>{
+      const ov=isOD(l.nextFollowupDate);
+      const lastFup=fups.filter(f=>f.leadId===l.id).sort((a,b)=>new Date(b.date)-new Date(a.date))[0];
+      const ct=lastFup?CTYPES.find(c=>c[0]===lastFup.type):null;
+      const bg=ov?"#fff5f5":i%2===0?"#fff":"#fafafa";
+      rows+=`<tr style="background:${bg}">
+        <td style="padding:7px 8px;border:1px solid #ddd;font-weight:bold;white-space:nowrap;color:${ov?"#dc2626":"#111"}">${ov?"\u26a0 ":""}${fmtD2(l.nextFollowupDate)}</td>
+        <td style="padding:7px 8px;border:1px solid #ddd;font-weight:bold">${fmtN(l)}</td>
+        <td style="padding:7px 8px;border:1px solid #ddd">${l.salesperson}</td>
+        <td style="padding:7px 8px;border:1px solid #ddd;font-size:10px">${l.store||"\u2014"}</td>
+        <td style="padding:7px 8px;border:1px solid #ddd;text-align:right;font-weight:bold">${fmtE(l.amount)}</td>
+        <td style="padding:7px 8px;border:1px solid #ddd;text-align:center">${TEMP[l.temperature].e} ${TEMP[l.temperature].l}</td>
+        <td style="padding:7px 8px;border:1px solid #ddd;text-align:center;color:#4f46e5;font-size:10px">${l.expectedCloseDate?fmtM(l.expectedCloseDate):"\u2014"}</td>
+        <td style="padding:7px 8px;border:1px solid #ddd;font-size:10px">${lastFup?(ct?ct[1]+" "+ct[2]+(lastFup.comment?" : "+lastFup.comment:""):"(pas de type)"):"Aucune relance enregistr\u00e9e"}</td>
+      </tr>`;
+    });
+
+    sections+=`<div style="margin-bottom:28px;page-break-inside:avoid">
+      <h2 style="font-size:14px;font-weight:bold;background:#f3f4f6;padding:8px 12px;margin-bottom:0;border-radius:6px 6px 0 0;border:1px solid #ddd">${resp} \u2014 ${filtered.length} relance${filtered.length>1?"s":""}</h2>
+      <table style="width:100%;border-collapse:collapse;font-size:11px;border:1px solid #ddd;border-top:none">
+        <thead><tr style="background:#fafafa">
+          <th style="padding:6px 8px;text-align:left;border:1px solid #ddd">Date relance</th>
+          <th style="padding:6px 8px;text-align:left;border:1px solid #ddd">Client</th>
+          <th style="padding:6px 8px;text-align:left;border:1px solid #ddd">Vendeur</th>
+          <th style="padding:6px 8px;text-align:left;border:1px solid #ddd">Magasin</th>
+          <th style="padding:6px 8px;text-align:right;border:1px solid #ddd">Devis</th>
+          <th style="padding:6px 8px;text-align:center;border:1px solid #ddd">Temp.</th>
+          <th style="padding:6px 8px;text-align:center;border:1px solid #ddd">Signature</th>
+          <th style="padding:6px 8px;text-align:left;border:1px solid #ddd">Dernier contact & commentaire</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>`;
+  });
+
+  const body=totalRelances===0
+    ?`<p style="text-align:center;color:#888;padding:40px">Aucune relance trouv\u00e9e pour cette p\u00e9riode.</p>`
+    :sections;
+
+  // Créer un iframe caché pour l'impression (évite le bloqueur de popups)
+  const existingIframe=document.getElementById("print_iframe");
+  if(existingIframe) existingIframe.remove();
+  const iframe=document.createElement("iframe");
+  iframe.id="print_iframe";
+  iframe.style.cssText="position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;border:none";
+  document.body.appendChild(iframe);
+  iframe.contentDocument.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${titre}</title>
+    <style>body{font-family:Arial,sans-serif;padding:20px;font-size:12px;color:#111}h1{margin:0 0 4px}@media print{@page{size:A4 landscape;margin:12mm}}</style>
+  </head><body>
+    <h1>${titre}</h1>
+    <p style="font-size:12px;color:#666;margin-bottom:16px">Imprimé le ${fmtWk(now)} · Suivi Commercial · ${totalRelances} relance${totalRelances>1?"s":""}</p>
+    <hr style="margin-bottom:20px">
+    ${body}
+  </body></html>`);
+  iframe.contentDocument.close();
+  setTimeout(()=>{iframe.contentWindow.focus();iframe.contentWindow.print();},300);
+};
+
+
+window.printRapport=function(){
+  const el=document.querySelector(".wrap");
+  if(!el)return;
+  const iframe=document.createElement("iframe");
+  iframe.style.cssText="position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;border:none";
+  document.body.appendChild(iframe);
+  iframe.contentDocument.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:Arial,sans-serif;padding:20px;font-size:12px}table{width:100%;border-collapse:collapse}td,th{padding:7px 8px;border:1px solid #ddd;font-size:11px}@media print{@page{size:A4;margin:12mm}}</style></head><body>${el.innerHTML}</body></html>`);
+  iframe.contentDocument.close();
+  setTimeout(()=>{iframe.contentWindow.focus();iframe.contentWindow.print();},300);
+};
+window.exportData=function(){
+  const now=new Date();
+  const stamp=`${now.getFullYear()}${String(now.getMonth()+1).padStart(2,"0")}${String(now.getDate()).padStart(2,"0")}_${String(now.getHours()).padStart(2,"0")}${String(now.getMinutes()).padStart(2,"0")}`;
+  const data={leads,fups,objectifs,exportedAt:now.toISOString(),version:"1.0"};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=`suivi_commercial_${stamp}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+};
+
+window.importData=function(input){
+  const file=input.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(!data.leads||!Array.isArray(data.leads)){
+        alert("❌ Fichier invalide — ce n'est pas une sauvegarde Suivi Commercial.");
+        return;
+      }
+      const nb=data.leads.length;
+      const date=data.exportedAt?new Date(data.exportedAt).toLocaleString("fr-FR"):"inconnue";
+      if(!confirm(`📂 Restaurer la sauvegarde du ${date} ?\n\n${nb} dossiers trouvés.\n\n⚠️ Cela remplacera TOUTES les données actuelles.`))return;
+      leads=data.leads||[];
+      fups=data.fups||[];
+      objectifs=data.objectifs||{};
+      save();
+      render();
+      alert(`✅ Restauration réussie ! ${nb} dossiers chargés.`);
+    } catch(err){
+      alert("❌ Erreur lors de la lecture du fichier : "+err.message);
+    }
+    input.value=""; // reset pour pouvoir reimporter le même fichier
+  };
+  reader.readAsText(file);
+};
+
+window.updateRelanceurOptions=function(store){
+  const sel=document.getElementById("m_relanceur");
+  if(!sel)return;
+  const secs=secsForStore(store);
+  const options=[...SPS,...secs].filter((v,i,a)=>a.indexOf(v)===i);
+  const cur=sel.value;
+  sel.innerHTML=options.map(r=>`<option value="${r}"${r===cur?" selected":""}>${r}</option>`).join("");
+  // Si la valeur actuelle n'est plus disponible, on reset
+  if(!options.includes(cur)) sel.value=options[0]||"";
+};
+window.changeRelanceur=function(id,val){
+  leads=leads.map(l=>l.id===id?{...l,relanceur:val}:l);
+  save();render();
+};
+
+// ─── RELANCES PAR PERSONNE ────────────────────────────────────
+function relancesHTML(){
+  const responsables=boss()?[...new Set([...SPS,...SECS])]:[user];
+
+  // Calcul semaine courante (lundi → dimanche)
+  const now=new Date();
+  const dayOfWeek=now.getDay()===0?7:now.getDay();
+  const monday=new Date(now);monday.setDate(now.getDate()-(dayOfWeek-1));monday.setHours(0,0,0,0);
+  const sunday=new Date(monday);sunday.setDate(monday.getDate()+6);sunday.setHours(23,59,59,999);
+  const fmtWk=d=>d.toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit"});
+
+  // Responsables visibles selon le filtre
+  const visibleResp=relFilt==="Tous"?responsables:[relFilt];
+
+  let html="";
+
+  // BOUTONS FILTRE PAR PERSONNE
+  if(boss()){
+    html+=`<div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
+      <span style="font-size:12px;color:#6b7280;font-weight:500">👤 Responsable :</span>
+      ${["Tous",...responsables].map(r=>`
+        <button onclick="relFilt='${r}';render()" style="padding:6px 14px;border-radius:20px;border:${relFilt===r?"none":"1px solid #d1d5db"};background:${relFilt===r?"#4f46e5":"#fff"};color:${relFilt===r?"#fff":"#374151"};font-size:12px;font-weight:${relFilt===r?600:400};cursor:pointer">
+          ${r==="Tous"?"Tous":r}
+        </button>`).join("")}
+    </div>`;
+  }
+
+  html+=`<div style="background:#fff;border:1px solid #e8eaed;border-radius:10px;padding:14px 18px;margin-bottom:14px">
+    <div style="font-weight:600;font-size:13px;margin-bottom:10px">🖨️ Imprimer les relances par période</div>
+    <div style="display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+      <div>
+        <label style="font-size:11px;color:#6b7280;display:block;margin-bottom:4px;font-weight:500">Du</label>
+        <input type="date" id="print_from" style="width:150px;border:1px solid #d1d5db;border-radius:7px;padding:7px 10px;font-size:13px;outline:none">
+      </div>
+      <div>
+        <label style="font-size:11px;color:#6b7280;display:block;margin-bottom:4px;font-weight:500">Au</label>
+        <input type="date" id="print_to" style="width:150px;border:1px solid #d1d5db;border-radius:7px;padding:7px 10px;font-size:13px;outline:none">
+      </div>
+      <button onclick="printRelances()" style="background:#4f46e5;color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer">🖨️ Imprimer</button>
+      <button onclick="printRelances('week')" style="background:#f3f4f6;color:#374151;border:1px solid #d1d5db;border-radius:8px;padding:9px 14px;font-size:12px;cursor:pointer">Cette semaine</button>
+      <button onclick="printRelances('retard')" style="background:#fef2f2;color:#dc2626;border:1px solid #fca5a5;border-radius:8px;padding:9px 14px;font-size:12px;cursor:pointer">⚠ En retard</button>
+    </div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;padding-top:10px;border-top:1px solid #f3f4f6">
+      <span style="font-size:11px;color:#6b7280;font-weight:500">Trier par :</span>
+      <div style="display:flex;gap:6px">
+        ${[["date","📅 Date"],["amount_desc","💰 Montant ↓"],["amount_asc","💰 Montant ↑"],["temperature","🌡️ Température"]].map(([v,l])=>
+          `<button onclick="window.relPrintSort='${v}'" style="padding:5px 12px;border-radius:20px;border:1px solid #d1d5db;background:#fff;color:#374151;font-size:11px;cursor:pointer">${l}</button>`
+        ).join("")}
+      </div>
+      <span style="font-size:11px;color:#6b7280;font-weight:500;margin-left:8px">Filtrer temp. :</span>
+      <div style="display:flex;gap:6px">
+        ${[["all","Toutes"],["hot","🔥 Chaud"],["warm","🌡️ Tiède"],["cold","❄️ Froid"]].map(([v,l])=>
+          `<button onclick="window.relPrintTemp='${v}'" style="padding:5px 12px;border-radius:20px;border:1px solid #d1d5db;background:#fff;color:#374151;font-size:11px;cursor:pointer">${l}</button>`
+        ).join("")}
+      </div>
+    </div>
+    <div style="font-size:11px;color:#9ca3af;margin-top:8px">Sélectionnez vos options de tri avant d'imprimer. Par défaut : triées par date de relance.</div>
+  </div>
+  <div style="font-size:12px;color:#6b7280;margin-bottom:14px">Relances groupées par responsable — semaine du ${fmtWk(monday)} au ${fmtWk(sunday)}.</div>`;
+
+  const in7=new Date();in7.setDate(in7.getDate()+7);
+
+  visibleResp.forEach(resp=>{
+    const myLeads=aL().filter(l=>{
+      const r=l.relanceur||l.salesperson;
+      return r===resp && (boss()||l.salesperson===user||l.relanceur===user);
+    });
+    if(!myLeads.length)return;
+
+    const od2=myLeads.filter(l=>isOD(l.nextFollowupDate));
+    const today2=myLeads.filter(l=>!isOD(l.nextFollowupDate)&&l.nextFollowupDate&&new Date(l.nextFollowupDate)<=in7);
+    const later=myLeads.filter(l=>l.nextFollowupDate&&new Date(l.nextFollowupDate)>in7);
+    const noDt=myLeads.filter(l=>!l.nextFollowupDate);
+
+    html+=`<div class="card" style="margin-bottom:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="font-weight:700;font-size:15px">${resp}</div>
+            ${SECS.includes(resp)?`<span style="background:#f5f3ff;color:#7c3aed;border:1px solid #ddd6fe;border-radius:12px;padding:2px 8px;font-size:10px;font-weight:600">📋 Secrétaire</span>`:`<span style="background:#f0f9ff;color:#0891b2;border:1px solid #bae6fd;border-radius:12px;padding:2px 8px;font-size:10px;font-weight:600">🏷️ Vendeur</span>`}
+          </div>
+          <div style="font-size:11px;color:#9ca3af;margin-top:2px">${myLeads.length} dossier${myLeads.length>1?"s":""} actifs assignés${od2.length?` · <span style="color:#dc2626;font-weight:600">⚠ ${od2.length} en retard</span>`:""}</div>
+        </div>
+        ${od2.length?`<span style="background:#fef2f2;color:#dc2626;border:1px solid #fca5a5;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600">⚠ ${od2.length} en retard</span>`:`<span style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600">✓ À jour</span>`}
+      </div>`;
+
+    if(!myLeads.length){html+=`<div class="empty">Aucun dossier assigné</div>`;html+=`</div>`;return;}
+
+    const renderGroup=(list,title,color)=>{
+      if(!list.length)return"";
+      let g=`<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:600;color:${color};margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">${title} (${list.length})</div>`;
+      list.forEach(l=>{
+        const ov=isOD(l.nextFollowupDate);
+        g+=`<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;margin-bottom:5px;background:${ov?"#fff5f5":"#f9fafb"};border:1px solid ${ov?"#fca5a5":"#e8eaed"}">
+          <span style="font-size:14px">${TEMP[l.temperature].e}</span>
+          <div style="flex:1;cursor:pointer" onclick="go('lead','${l.id}')">
+            <div style="font-weight:600;font-size:13px">${fmtN(l)}</div>
+            <div style="font-size:11px;color:#9ca3af">${l.salesperson} · ${l.store||""}${l.expectedCloseDate?" · Signature : "+fmtM(l.expectedCloseDate):""}${l.salesperson!==resp?`<span style="color:#7c3aed;font-weight:600;margin-left:4px">· délégué par ${l.salesperson}</span>`:""}</div>
+          </div>
+          <div style="text-align:right;min-width:80px">
+            <div style="font-weight:700;color:#4f46e5;font-size:13px">${fmtE(l.amount)}</div>
+            <div style="font-size:11px;color:${ov?"#dc2626":"#6b7280"};font-weight:${ov?600:400}">${ov?"⚠ En retard":l.nextFollowupDate?fmtD(l.nextFollowupDate):"—"}</div>
+          </div>
+          <div style="min-width:130px">
+            <select style="font-size:11px;padding:4px 6px;border-radius:6px;border:1px solid #d1d5db;cursor:pointer;background:#fff;width:100%" onchange="changeRelanceur('${l.id}',this.value)">
+              ${[...SPS,...secsForStore(l.store)].filter((v,i,a)=>a.indexOf(v)===i).map(r=>`<option value="${r}"${(l.relanceur||l.salesperson)===r?" selected":""}>${r}</option>`).join("")}
+            </select>
+          </div>
+        </div>`;
+      });
+      g+=`</div>`;return g;
+    };
+
+    html+=renderGroup(od2,"🔴 En retard","#dc2626");
+    html+=renderGroup(today2,"🟡 Cette semaine","#d97706");
+    html+=renderGroup(later,"🟢 Plus tard","#16a34a");
+    html+=renderGroup(noDt,"⬜ Sans date de relance","#9ca3af");
+    html+=`</div>`;
+  });
+  return html;
+}
+
+// ─── RAPPORT HEBDOMADAIRE ─────────────────────────────────────
+function rapportHTML(){
+  const now=new Date();
+  const day=now.getDay()===0?7:now.getDay();
+  const mon=new Date(now);mon.setDate(now.getDate()-(day-1));mon.setHours(0,0,0,0);
+  const sun=new Date(mon);sun.setDate(mon.getDate()+6);sun.setHours(23,59,59,999);
+  const fmtWk=d=>d.toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit",year:"numeric"});
+  const inWeek=l=>new Date(l.createdAt)>=mon&&new Date(l.createdAt)<=sun;
+  const inWeekF=f=>new Date(f.date)>=mon&&new Date(f.date)<=sun;
+
+  const newLeads=leads.filter(inWeek);
+  const wonWeek=leads.filter(l=>l.status==="won"&&inWeek(l));
+  const fupWeek=fups.filter(inWeekF);
+  const odL=leads.filter(l=>l.status==="active"&&isOD(l.nextFollowupDate));
+  const dormants=leads.filter(l=>{
+    if(l.status!=="active")return false;
+    const lastF=fups.filter(f=>f.leadId===l.id).sort((a,b)=>new Date(b.date)-new Date(a.date))[0];
+    const lastActJ=lastF?Math.floor((new Date()-new Date(lastF.date))/86400000):Math.floor((new Date()-new Date(l.createdAt))/86400000);
+    return lastActJ>15;
+  });
+
+  // N-1 : même semaine l'an dernier
+  const mon1=new Date(mon);mon1.setFullYear(mon1.getFullYear()-1);
+  const sun1=new Date(sun);sun1.setFullYear(sun1.getFullYear()-1);
+  const inLastYear=l=>new Date(l.createdAt)>=mon1&&new Date(l.createdAt)<=sun1;
+  const newLeadsN1=leads.filter(inLastYear);
+  const wonN1=leads.filter(l=>l.status==="won"&&inLastYear(l));
+
+  let html=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+    <div><div style="font-weight:700;font-size:16px">📋 Rapport hebdomadaire</div><div style="font-size:12px;color:#9ca3af">Semaine du ${fmtWk(mon)} au ${fmtWk(sun)}</div></div>
+    <button onclick="printRapport()" style="background:#4f46e5;color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer">🖨️ Imprimer le rapport</button>
+  </div>`;
+
+  // KPIs semaine
+  const caNew=newLeads.reduce((s,l)=>s+l.amount,0);
+  const caWon=wonWeek.reduce((s,l)=>s+l.amount,0);
+  const caNewN1=newLeadsN1.reduce((s,l)=>s+l.amount,0);
+  const caWonN1=wonN1.reduce((s,l)=>s+l.amount,0);
+  const pct=(a,b)=>b===0?"N/A":(a>=b?"+":"")+Math.round((a-b)/b*100)+"%";
+  const pctColor=(a,b)=>b===0?"#6b7280":a>=b?"#16a34a":"#dc2626";
+
+  html+=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">`;
+  [{l:"Nouveaux devis",v:newLeads.length,s:fmtE(caNew),p:pct(newLeads.length,newLeadsN1.length),pc:pctColor(newLeads.length,newLeadsN1.length),c:"#4f46e5"},
+   {l:"CA signé",v:fmtE(caWon),s:wonWeek.length+" dossier(s)",p:pct(caWon,caWonN1),pc:pctColor(caWon,caWonN1),c:"#16a34a"},
+   {l:"Relances effectuées",v:fupWeek.length,s:"cette semaine",p:"",pc:"",c:"#0891b2"},
+   {l:"⚠ Retards",v:odL.length,s:"relances en retard",p:"",pc:odL.length>0?"#dc2626":"#16a34a",c:odL.length>0?"#dc2626":"#16a34a"},
+  ].forEach(c=>{
+    html+=`<div class="kpi" style="border-left:4px solid ${c.c}">
+      <div class="lbl">${c.l}</div>
+      <div class="val" style="color:${c.c}">${c.v}</div>
+      <div style="display:flex;justify-content:space-between;margin-top:3px">
+        <span style="font-size:10px;color:#9ca3af">${c.s}</span>
+        ${c.p?`<span style="font-size:11px;font-weight:700;color:${c.pc}">${c.p} vs N-1</span>`:""}
+      </div>
+    </div>`;
+  });
+  html+=`</div>`;
+
+  // Comparaison N vs N-1
+  html+=`<div class="card" style="margin-bottom:14px"><div class="card-title">📊 Cette semaine vs même semaine N-1</div><div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;margin-top:12px"><thead><tr style="background:#fafafa"><th style="padding:8px 10px;text-align:left;font-size:11px;color:#9ca3af">Indicateur</th><th style="padding:8px 10px;text-align:right;font-size:11px;color:#4f46e5">Cette semaine</th><th style="padding:8px 10px;text-align:right;font-size:11px;color:#9ca3af">N-1</th><th style="padding:8px 10px;text-align:right;font-size:11px;color:#6b7280">Évolution</th></tr></thead><tbody>
+    ${[["Nouveaux devis (nb)",newLeads.length,newLeadsN1.length],["CA nouveaux devis",fmtE(caNew),fmtE(caNewN1)],["Dossiers signés",wonWeek.length,wonN1.length],["CA signé",fmtE(caWon),fmtE(caWonN1)]].map(([l,a,b])=>{
+      const numA=typeof a==="number"?a:parseFloat((a||"0").replace(/[^0-9.-]/g,""));
+      const numB=typeof b==="number"?b:parseFloat((b||"0").replace(/[^0-9.-]/g,""));
+      const ev=numB===0?"N/A":(numA>=numB?"+":"")+Math.round((numA-numB)/numB*100)+"%";
+      const c=numB===0?"#6b7280":numA>=numB?"#16a34a":"#dc2626";
+      return `<tr style="border-bottom:1px solid #f3f4f6"><td style="padding:10px 10px;font-weight:500">${l}</td><td style="padding:10px 10px;text-align:right;font-weight:700;color:#4f46e5">${typeof a==="string"?a:a}</td><td style="padding:10px 10px;text-align:right;color:#9ca3af">${typeof b==="string"?b:b}</td><td style="padding:10px 10px;text-align:right;font-weight:700;color:${c}">${ev}</td></tr>`;
+    }).join("")}
+  </tbody></table></div></div>`;
+
+  // Nouveaux dossiers de la semaine
+  html+=`<div class="card" style="margin-bottom:14px"><div class="card-title">🆕 Nouveaux dossiers cette semaine (${newLeads.length})</div>`;
+  if(!newLeads.length){html+=`<div class="empty">Aucun nouveau dossier</div>`;}
+  else{html+=`<table style="width:100%;border-collapse:collapse;margin-top:10px"><thead><tr><th style="padding:7px 10px;text-align:left;font-size:11px;color:#9ca3af">Client</th><th style="padding:7px 10px;font-size:11px;color:#9ca3af">Vendeur</th><th style="padding:7px 10px;font-size:11px;color:#9ca3af">Magasin</th><th style="padding:7px 10px;text-align:right;font-size:11px;color:#9ca3af">Montant</th><th style="padding:7px 10px;font-size:11px;color:#9ca3af">Temp.</th><th style="padding:7px 10px;font-size:11px;color:#9ca3af">Type</th></tr></thead><tbody>`;
+  newLeads.sort((a,b)=>b.amount-a.amount).forEach(l=>{html+=`<tr style="border-bottom:1px solid #f9fafb;cursor:pointer" onclick="go('lead','${l.id}')"><td style="padding:9px 10px;font-weight:600">${fmtN(l)}</td><td style="padding:9px 10px;color:#6b7280">${l.salesperson}</td><td style="padding:9px 10px"><span class="store-tag">${l.store||"—"}</span></td><td style="padding:9px 10px;text-align:right;font-weight:700;color:#4f46e5">${fmtE(l.amount)}</td><td style="padding:9px 10px"><span class="badge ${l.temperature}">${TEMP[l.temperature].e}</span></td><td style="padding:9px 10px;font-size:11px;color:#9ca3af">${l.ptype||"—"}</td></tr>`;});
+  html+=`</tbody></table>`;}
+  html+=`</div>`;
+
+  // Signés cette semaine
+  html+=`<div class="card" style="margin-bottom:14px"><div class="card-title">✅ Signés cette semaine (${wonWeek.length}) — ${fmtE(caWon)}</div>`;
+  if(!wonWeek.length){html+=`<div class="empty">Aucun dossier signé</div>`;}
+  else{html+=`<table style="width:100%;border-collapse:collapse;margin-top:10px"><thead><tr><th style="padding:7px 10px;text-align:left;font-size:11px;color:#9ca3af">Client</th><th style="padding:7px 10px;font-size:11px;color:#9ca3af">Vendeur</th><th style="padding:7px 10px;font-size:11px;color:#9ca3af">Magasin</th><th style="padding:7px 10px;text-align:right;font-size:11px;color:#9ca3af">CA</th></tr></thead><tbody>`;
+  wonWeek.sort((a,b)=>b.amount-a.amount).forEach(l=>{html+=`<tr style="border-bottom:1px solid #f9fafb"><td style="padding:9px 10px;font-weight:600">${fmtN(l)}${l.signedDirect?`<span style="font-size:10px;color:#16a34a;margin-left:6px">⚡ direct</span>`:""}</td><td style="padding:9px 10px;color:#6b7280">${l.salesperson}</td><td style="padding:9px 10px"><span class="store-tag">${l.store||"—"}</span></td><td style="padding:9px 10px;text-align:right;font-weight:700;color:#16a34a">${fmtE(l.amount)}</td></tr>`;});
+  html+=`</tbody></table>`;}
+  html+=`</div>`;
+
+  // Dossiers dormants
+  html+=`<div class="card"><div class="card-title" style="color:${dormants.length>0?"#dc2626":"#374151"}">⏳ Dossiers dormants +15 jours sans activité (${dormants.length})</div>`;
+  if(!dormants.length){html+=`<div class="empty" style="color:#16a34a">✓ Tous les dossiers sont actifs !</div>`;}
+  else{html+=`<div style="font-size:12px;color:#9ca3af;margin-bottom:10px">Ces dossiers n'ont aucune relance depuis plus de 15 jours — à réactiver ou à clore.</div>`;
+  dormants.sort((a,b)=>b.amount-a.amount).forEach(l=>{
+    const lastF=fups.filter(f=>f.leadId===l.id).sort((a,b)=>new Date(b.date)-new Date(a.date))[0];
+    const j=lastF?Math.floor((new Date()-new Date(lastF.date))/86400000):Math.floor((new Date()-new Date(l.createdAt))/86400000);
+    html+=`<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;margin-bottom:5px;background:#fff5f5;border:1px solid #fca5a5;border-radius:8px;cursor:pointer" onclick="go('lead','${l.id}')">
+      <div style="display:flex;align-items:center;gap:8px"><span>${TEMP[l.temperature].e}</span><div><div style="font-weight:600">${fmtN(l)}</div><div style="font-size:11px;color:#9ca3af">${l.salesperson} · ${l.store||""}</div></div></div>
+      <div style="text-align:right"><div style="font-weight:700;color:#4f46e5">${fmtE(l.amount)}</div><div style="font-size:11px;color:#dc2626;font-weight:600">🔴 ${j} jours sans activité</div></div>
+    </div>`;
+  });}
+  html+=`</div>`;
+  return html;
+}
+
+// ─── OBJECTIFS ────────────────────────────────────────────────
+function objectifsHTML(){
+  const now=new Date();
+  const curMonth=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}`;
+
+  let html=`<div style="font-weight:700;font-size:16px;margin-bottom:4px">🎯 Objectifs mensuels</div>
+  <div style="font-size:12px;color:#9ca3af;margin-bottom:16px">Objectifs CA par vendeur et par magasin. La barre bleue = pipeline en attente, la couleur = déjà signé.</div>`;
+
+  // Sélecteur de mois + onglets
+  html+=`<div style="display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap">
+    <label style="font-size:12px;color:#6b7280;font-weight:500">📅 Mois :</label>
+    <input type="month" id="obj_month" value="${curMonth}" onchange="render()" style="border:1px solid #d1d5db;border-radius:7px;padding:7px 11px;font-size:13px;outline:none">
+    <span style="color:#d1d5db">|</span>
+    ${["vendeurs","magasins"].map(t=>`<button onclick="objTab='${t}';render()" style="padding:6px 16px;border-radius:20px;border:${(window.objTab||'vendeurs')===t?"none":"1px solid #d1d5db"};background:${(window.objTab||'vendeurs')===t?"#4f46e5":"#fff"};color:${(window.objTab||'vendeurs')===t?"#fff":"#374151"};font-size:12px;font-weight:${(window.objTab||'vendeurs')===t?600:400};cursor:pointer">${t==="vendeurs"?"👤 Par vendeur":"🏪 Par magasin"}</button>`).join("")}
+  </div>`;
+
+  const month=document.getElementById("obj_month")?.value||curMonth;
+  const tab=window.objTab||"vendeurs";
+
+  // Fonction helper barre de progression
+  const makeBar=(key,label,won,pipe,defaultObj,icon)=>{
+    const obj=objectifs[key]!==undefined?objectifs[key]:defaultObj;
+    const pctWon=obj?Math.min(100,Math.round(won/obj*100)):0;
+    const pctPipe=obj?Math.min(100-pctWon,Math.round(pipe/obj*100)):0;
+    const pctColor=pctWon>=80?"#16a34a":pctWon>=50?"#d97706":"#dc2626";
+    const manque=Math.max(0,obj-won);
+    return `<div class="card" style="padding:16px 18px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:10px">
+        <div style="font-weight:700;font-size:14px">${icon} ${label}</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <label style="font-size:11px;color:#6b7280">Objectif :</label>
+          <input type="number" value="${obj}" placeholder="${defaultObj}" min="0"
+            style="width:130px;border:1px solid #d1d5db;border-radius:7px;padding:6px 10px;font-size:13px;outline:none"
+            onchange="objectifs['${key}']=parseFloat(this.value)||0;save();render()">
+          <span style="font-size:11px;color:#9ca3af">€</span>
+        </div>
+      </div>
+      <div style="display:flex;height:16px;background:#f3f4f6;border-radius:8px;overflow:hidden;margin-bottom:10px">
+        <div style="flex:${pctWon};background:${pctColor};min-width:${pctWon?4:0}px" title="CA signé : ${fmtE(won)}"></div>
+        <div style="flex:${pctPipe};background:#c7d2fe;min-width:${pctPipe?4:0}px" title="Pipeline : ${fmtE(pipe)}"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;flex-wrap:wrap;gap:6px">
+        <div style="display:flex;gap:16px">
+          <span>✅ Signé : <b style="color:${pctColor}">${fmtE(won)}</b></span>
+          <span>💼 Pipeline : <b style="color:#4f46e5">${fmtE(pipe)}</b></span>
+          <span style="color:#9ca3af">Potentiel : <b>${fmtE(won+pipe)}</b></span>
+        </div>
+        <span style="font-weight:700;font-size:13px;color:${pctColor}">${pctWon}%${pctWon>=100?" 🎉":""}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:8px">
+        <div style="flex:1;height:4px;background:#f3f4f6;border-radius:2px"><div style="height:4px;border-radius:2px;background:${pctColor};width:${pctWon}%"></div></div>
+        <span style="font-size:11px;color:${pctColor};font-weight:600;white-space:nowrap">${manque>0?`Il manque ${fmtE(manque)}`:"Objectif atteint !"}</span>
+      </div>
+    </div>`;
+  };
+
+  html+=`<div style="display:flex;flex-direction:column;gap:12px">`;
+
+  if(tab==="vendeurs"){
+    // Total équipe d'abord
+    const totWon=leads.filter(l=>l.status==="won"&&l.expectedCloseDate===month).reduce((s,l)=>s+l.amount,0);
+    const totPipe=leads.filter(l=>l.status==="active"&&l.expectedCloseDate===month).reduce((s,l)=>s+l.amount,0);
+    const totObj=SPS.reduce((s,sp)=>{const k=`${sp}_${month}`;return s+(objectifs[k]!==undefined?objectifs[k]:100000);},0);
+    html+=`<div style="background:#eef2ff;border:1px solid #c7d2fe;border-radius:10px;padding:14px 18px;margin-bottom:4px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <div style="font-weight:700;color:#4f46e5">📊 Total équipe — ${fmtM(month)}</div>
+        <div style="font-size:12px;color:#4f46e5">Objectif cumulé : <b>${fmtE(totObj)}</b></div>
+      </div>
+      <div style="display:flex;gap:16px;margin-top:8px;font-size:12px;flex-wrap:wrap">
+        <span>✅ Signé : <b style="color:#16a34a">${fmtE(totWon)}</b></span>
+        <span>💼 Pipeline : <b style="color:#4f46e5">${fmtE(totPipe)}</b></span>
+        <span>📈 Progression : <b>${totObj?Math.round(totWon/totObj*100)+"%":"—"}</b></span>
+      </div>
+    </div>`;
+    SPS.forEach(sp=>{
+      const key=`${sp}_${month}`;
+      const won=leads.filter(l=>l.salesperson===sp&&l.status==="won"&&l.expectedCloseDate===month).reduce((s,l)=>s+l.amount,0);
+      const pipe=leads.filter(l=>l.salesperson===sp&&l.status==="active"&&l.expectedCloseDate===month).reduce((s,l)=>s+l.amount,0);
+      html+=makeBar(key,sp,won,pipe,100000,"👤");
+    });
+  } else {
+    // Total tous magasins
+    const totWon=leads.filter(l=>l.status==="won"&&l.expectedCloseDate===month).reduce((s,l)=>s+l.amount,0);
+    const totPipe=leads.filter(l=>l.status==="active"&&l.expectedCloseDate===month).reduce((s,l)=>s+l.amount,0);
+    const totObj=STORES.reduce((s,st)=>{const k=`store_${st}_${month}`;return s+(objectifs[k]!==undefined?objectifs[k]:200000);},0);
+    html+=`<div style="background:#eef2ff;border:1px solid #c7d2fe;border-radius:10px;padding:14px 18px;margin-bottom:4px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <div style="font-weight:700;color:#4f46e5">📊 Total tous magasins — ${fmtM(month)}</div>
+        <div style="font-size:12px;color:#4f46e5">Objectif cumulé : <b>${fmtE(totObj)}</b></div>
+      </div>
+      <div style="display:flex;gap:16px;margin-top:8px;font-size:12px;flex-wrap:wrap">
+        <span>✅ Signé : <b style="color:#16a34a">${fmtE(totWon)}</b></span>
+        <span>💼 Pipeline : <b style="color:#4f46e5">${fmtE(totPipe)}</b></span>
+        <span>📈 Progression : <b>${totObj?Math.round(totWon/totObj*100)+"%":"—"}</b></span>
+      </div>
+    </div>`;
+    STORES.forEach(st=>{
+      const key=`store_${st}_${month}`;
+      const won=leads.filter(l=>l.store===st&&l.status==="won"&&l.expectedCloseDate===month).reduce((s,l)=>s+l.amount,0);
+      const pipe=leads.filter(l=>l.store===st&&l.status==="active"&&l.expectedCloseDate===month).reduce((s,l)=>s+l.amount,0);
+      html+=makeBar(key,st,won,pipe,200000,"🏪");
+    });
+  }
+
+  html+=`</div>
+  <div style="margin-top:14px;padding:10px 14px;background:#fffbe6;border:1px solid #ffe58f;border-radius:8px;font-size:11px;color:#ad6800">
+    💡 <b>Légende :</b> barre colorée = CA signé · barre bleue claire = pipeline en attente de signature · les deux additionnés = potentiel total du mois.
+  </div>`;
+  return html;
+}
+
+// ─── RENDER ───────────────────────────────────────────────────
+function render(){
+  const sel=leads.find(l=>l.id===lid);
+  const odL=aL().filter(l=>isOD(l.nextFollowupDate));
+  const curView=sel?"lead":view;
+
+  let html=`
+  <div class="hdr">
+    <span class="hdr-title">Suivi Commercial</span>
+    <div class="hdr-mid">
+      ${odL.length?`<span class="alert-red" onclick="filt.status='active';go('pipeline')">⚠ ${odL.length} relance${odL.length>1?"s":""} en retard</span>`:""}
+    </div>
+    <div class="user-box">
+      <span style="font-size:11px;color:#4f46e5;font-weight:600">👤 Connecté :</span>
+      <select style="background:transparent;border:none;font-size:13px;font-weight:700;color:#4f46e5;cursor:pointer;outline:none;padding:2px 4px" onchange="user=this.value;render()">
+        ${allU().map(u=>`<option${u===user?" selected":""}>${u}</option>`).join("")}
+      </select>
+    </div>
+  </div>
+  <div class="nav">
+    ${[["dashboard","📊 Tableau de bord"],["pipeline","📋 Tuyau"],["relances","📞 Relances"],["stats","📈 Statistiques"],["rapport","📋 Rapport"],["objectifs","🎯 Objectifs"]].map(([id,lb])=>`<button class="nb${view===id&&!sel?" a":""}" onclick="go('${id}')">${lb}</button>`).join("")}
+    ${sel?`<button class="nb a">👤 ${fmtN(sel)}</button>`:""}
+    <button onclick="exportData()" title="Sauvegarder toutes les données" style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:7px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer">💾 Exporter</button>
+    <label title="Restaurer depuis une sauvegarde" style="background:#fefce8;color:#d97706;border:1px solid #fde68a;border-radius:7px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer">
+      📂 Importer<input type="file" accept=".json" onchange="importData(this)" style="display:none">
+    </label>
+    <span id="sync_status" onclick="openModal('cloud')" style="cursor:pointer"></span>
+    <button onclick="openModal('cloud')" title="Configurer le partage réseau" style="background:#eef2ff;color:#4f46e5;border:1px solid #c7d2fe;border-radius:7px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer">☁️ Cloud</button>
+    <button onclick="openModal('lead')" style="background:#4f46e5;color:#fff;border:none;border-radius:7px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;margin-left:auto">+ Nouveau dossier</button>
+    <button onclick="openModal('vente')" style="background:#16a34a;color:#fff;border:none;border-radius:7px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer">💰 Saisir une vente</button>
+  </div>
+  <div class="wrap">
+    ${curView==="dashboard"?dashHTML():""}
+    ${curView==="pipeline"?pipelineHTML():""}
+    ${curView==="relances"?relancesHTML():""}
+    ${curView==="lead"?leadHTML():""}
+    ${curView==="rapport"?rapportHTML():""}
+    ${curView==="objectifs"?objectifsHTML():""}
+    ${curView==="stats"?statsHTML():""}
+  </div>
+  ${modal?`<div class="ovl" onclick="closeModal()">${modal==="lead"?modalLeadHTML():modal==="fup"?modalFupHTML():modal==="hist"?modalHistHTML():modal==="vente"?modalVenteHTML():modal==="cloud"?modalCloudHTML():""}</div>`:""}
+  `;
+  document.getElementById("app").innerHTML=html;
+
+  if(modal==="lead"){_signedDirect=false;setTimeout(()=>setTemp(_newTemp),0);}
+  if(modal==="fup"){
+    const l=leads.find(x=>x.id===modalData.leadId)||{};
+    _fTemp=l.temperature||"warm";_ct="call";_outcome="pending";_lossReason="";
+    setTimeout(()=>{setFTemp(_fTemp);setCT("call");},0);
+  }
+}
+
+load(); render(); initCloud();
+</script>
+</body>
+</html>
+
